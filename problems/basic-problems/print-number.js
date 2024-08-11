@@ -29,14 +29,14 @@ function printNumber2() {
 // Print Reverse Number 10 to 1
 
 // Using for Loop:
-function reverseNumber() {
+function printReverseNumber() {
   for (let i = 10; i >= 1; i--) {
     console.log(i);
   }
 }
 
 // Using While loop :
-function reverseNumber1() {
+function printReverseNumber1() {
   let i = 20;
   while (i >= 1) {
     console.log(i);
@@ -45,7 +45,7 @@ function reverseNumber1() {
 }
 
 // do...while loop:
-function printReverseNumber() {
+function printReverseNumber2() {
   let i = 20;
   do {
     console.log(i);
@@ -57,7 +57,7 @@ module.exports = {
   printNumber,
   printNumber1,
   printNumber2,
-  reverseNumber,
-  reverseNumber1,
   printReverseNumber,
+  printReverseNumber1,
+  printReverseNumber2,
 };
