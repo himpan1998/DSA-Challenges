@@ -15,7 +15,7 @@ This project contains solutions to various Data Structures and Algorithms (DSA) 
 
 ## Project Structure
 
-DSA/
+DATA-STRUCTURE-ALGORITHMS/
 ├── DSA-Challenges/
 │ └── README.md
 ├── problems/
