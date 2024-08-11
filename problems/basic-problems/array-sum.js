@@ -22,7 +22,7 @@ function arraySum1(numbers) {
   return sum;
 }
 
-// Using do...while:
+// Using do...while oop:
 function arraySum2(numbers) {
   let sum = 0;
   let i = 0;
@@ -41,7 +41,7 @@ function arraySum3(numbers) {
   return sum;
 }
 
-// for each :
+// using for each  loop :
 
 function arraySum4(numbers) {
   let sum = 0;
@@ -51,7 +51,7 @@ function arraySum4(numbers) {
   return sum;
 }
 
-// Using for....in : Less Ideal 
+// Using for....in loop  : Less Ideal 
   function arraySum5(){
     
   }
