@@ -11,12 +11,10 @@ function isStringPalindrome2(str) {
     let left=0;
     let right=newStr.length-1;
     while(left<right){
-        if(newStr[left]!==newStr[right]){
-            return false;
+        if(newStr[left]!==newStr[right]) return false;
             left++;
             right--;
-        }
+    }
         return true;
     }
-}
 module.exports = { isStringPalindrome, isStringPalindrome2 };
