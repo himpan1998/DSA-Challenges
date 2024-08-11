@@ -51,10 +51,8 @@ function arraySum4(numbers) {
   return sum;
 }
 
-// Using for....in loop  : Less Ideal 
-  function arraySum5(){
-    
-  }
+// Using for....in loop  : Less Ideal
+function arraySum5() {}
 module.exports = {
   arraySum,
   arraySum1,
