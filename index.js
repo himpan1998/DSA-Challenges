@@ -1,8 +1,12 @@
-const { problem1, problem2, problem3 } = require("./problems/problem1");
-
-
+const { checkEvenOdd } = require("./problems/basic-problems/even-odd-problem");
+const { reverseString } = require("./problems/basic-problems/reverse-string");
+const {
+  isStringPalindrome,
+  isStringPalindrome2,
+} = require("./problems/basic-problems/string-Palindrome");
 
 // Execute the problems
-problem1();
-problem2();
-problem3();
+console.log(checkEvenOdd(6));
+console.log(reverseString("laugh"));
+console.log(isStringPalindrome("Level"));
+console.log(isStringPalindrome2("dad"));
