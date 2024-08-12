@@ -52,12 +52,31 @@ function arraySum4(numbers) {
 }
 
 // Using for....in loop  : Less Ideal
-function arraySum5() {}
+
+function arraySumForIn(numbers) {
+  let sum = 0;
+  for (let index in numbers) {
+    if (numbers.hasOwnProperty(index)) {
+      sum += numbers[index];
+    }
+    return sum;
+  }
+}
+
+// Using array.reduce:
+function arraySumReduce(numbers) {
+  return numbers.reduce((sum, current) => sum + current, 0);
+}
+
+// Note : for...in is generally suitable for iterating
+// over object properties. For arrays, it is more efficient and
+// clearer to use methods like forEach, for...of, or reduce.
 module.exports = {
   arraySum,
   arraySum1,
   arraySum2,
   arraySum3,
   arraySum4,
-  arraySum5,
+  arraySumForIn,
+  arraySumReduce,
 };

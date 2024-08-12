@@ -18,7 +18,17 @@ const {
   arraySum2,
   arraySum3,
   arraySum4,
-} = require("./problems/basic-problems/array-sum");
+  arraySumForIn,
+  arraySumReduce,
+} = require("./problems/basic-problems/array-problems/array-sum");
+const {
+  arrayLargestNumber,
+  arrayLargestNum,
+} = require("./problems/basic-problems/array-problems/array-largest-number");
+const {
+  arraySmallestNumber,
+} = require("./problems/basic-problems/array-problems/array-smallest-number");
+
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -31,8 +41,13 @@ const {
 // reverseNumber();
 // reverseNumber1();
 // printReverseNumber();
-console.log(arraySum([1, 2, 3, 9]));
-console.log(arraySum1([1, 2, 3, 10]));
-console.log(arraySum2([1, 2, 3, 11]));
-console.log(arraySum3([1, 2, 3, 12]));
-console.log(arraySum4([1, 2, 3, 13]));
+// console.log(arraySum([1, 2, 3, 9]));
+// console.log(arraySum1([1, 2, 3, 10]));
+// console.log(arraySum2([1, 2, 3, 11]));
+// console.log(arraySum3([1, 2, 3, 12]));
+// console.log(arraySum4([1, 2, 3, 13]));
+// console.log(arraySumForIn([1, 2, 3, 13]));
+// console.log(arraySumReduce([1, 2, 3, 13]));
+// console.log(arrayLargestNumber([1, 2, 3, 13]));
+// console.log(arrayLargestNum([1, 2, 3, 19]));
+console.log(arraySmallestNumber([1, 2, 3, 19]));
