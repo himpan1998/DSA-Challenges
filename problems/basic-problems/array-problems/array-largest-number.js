@@ -1,4 +1,16 @@
-// Problem Statement: Write a function that takes an array and return the largest numbers:
+/**
+ *Write a function that takes an array and return the largest numbers:
+ * Input: numbers=[5,6,2,8,9]
+ * output: 8
+ *
+ */
+
+/**
+ * Finds and returns the largest number in an array of numbers.
+ *
+ * @param {Array<number>} numbers - The array of numbers to search through.
+ * @returns {number} - The largest number found in the array.
+ */
 
 // Using for loop:
 function arrayLargestNumber(numbers) {

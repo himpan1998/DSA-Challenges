@@ -1,8 +1,16 @@
-// P.S: Write a function that take an array of numbers and return the sums.
-// Input:[1,5,6,9,4];
-// output: 23
+/**
+ * Write a function that take an array of numbers and return the sums.
+ * Input: numbers =[1,5,6,9,4];
+ * Output: 23
+ */
 
-// using for loop:
+/**
+ * Calculates and returns the sum of all numbers in an array.
+ *
+ * @param {Array<number>} numbers - The array of numbers to sum up.
+ * @returns {number} - The total sum of all the numbers in the array.
+ */
+
 function arraySum(numbers) {
   let sum = 0;
   for (let i = 0; i < numbers.length; i++) {
