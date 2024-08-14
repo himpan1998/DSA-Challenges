@@ -49,6 +49,9 @@ const {
   countCharacter,
   countCharacter2,
 } = require("./problems/basic-problems/string-problems/occurance-of-specific-character-in-string");
+const {
+  longestConsecutiveSequence,
+} = require("./problems/intermediate-problems/array-problems/longest-consecutive-sequence");
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -76,5 +79,6 @@ const {
 // console.log(findRepeatedArray1([1, 2, 3, 4, 5, 3, 2,4]));
 // console.log(findUniqueElements([1, 2, 3, 4, 5, 3, 2, 4]));
 // console.log(checkAnagram("Hello","elloH"));
-console.log(countCharacter("Hello World", "l"));
+// console.log(countCharacter("Hello World", "l"));
 // console.log(countCharacter2("Hello World", "O"));
+console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
