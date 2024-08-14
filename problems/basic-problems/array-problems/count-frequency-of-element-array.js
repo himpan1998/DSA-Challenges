@@ -11,3 +11,16 @@
  * @param {Array<number>} numbers - The array of numbers to count.
  * @returns {Object} - An object with the frequency count of each element.
  */
+
+
+function countFrequency(numbers) {
+  const frequency = {};
+  for (let i = 0; i < numbers.length; i++) {
+    const num = numbers[i];
+    frequency[num] = (frequency[num] || 0) + 1;
+  }
+
+  return frequency;
+}
+
+module.exports={countFrequency}

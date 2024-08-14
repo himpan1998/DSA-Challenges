@@ -52,6 +52,10 @@ const {
 const {
   longestConsecutiveSequence,
 } = require("./problems/intermediate-problems/array-problems/longest-consecutive-sequence");
+
+const {
+  countFrequency,
+} = require("./problems/basic-problems/array-problems/count-frequency-of-element-array");
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -81,4 +85,5 @@ const {
 // console.log(checkAnagram("Hello","elloH"));
 // console.log(countCharacter("Hello World", "l"));
 // console.log(countCharacter2("Hello World", "O"));
-console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
+// console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
+console.log(countFrequency([1,2,3,4,5,3,2,2]));
