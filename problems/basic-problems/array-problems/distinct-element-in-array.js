@@ -16,4 +16,11 @@ function findUniqueElements(arr) {
   });
 }
 
-module.exports = { findUniqueElements };
+// By using set:
+function findDistinctArray(arr) {
+  let removeDuplicate = new Set(arr);
+     uniqueArray=[...removeDuplicate];
+     return uniqueArray;
+}
+
+module.exports = { findUniqueElements, findDistinctArray };

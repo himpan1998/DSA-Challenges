@@ -37,15 +37,9 @@ function findRepeatedArray1(arr) {
   });
   return result;
 }
-// By using set:
-function findDuplicateUsingSet(arr) {
-  let removeDuplicate = new Set(arr);
-     uniqueArray=[...removeDuplicate];
-     return uniqueArray;
-}
+
 module.exports = {
   findDuplicate,
   findRepeatedArray,
   findRepeatedArray1,
-  findDuplicateUsingSet,
 };
