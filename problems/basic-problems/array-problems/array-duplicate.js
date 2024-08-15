@@ -6,10 +6,11 @@
 
 /**
  * Finds and returns the duplicate numbers in an array.
- *
+ *  
  * @param {Array<number>} arrNum - The array of numbers to search for duplicates.
  * @returns {Array<number>} - An array containing the duplicate numbers.
  */
+
 function findDuplicate(arrNum) {
   let sortedArray = arrNum.slice().sort();
   let result = [];
@@ -36,5 +37,15 @@ function findRepeatedArray1(arr) {
   });
   return result;
 }
-
-module.exports = { findDuplicate, findRepeatedArray, findRepeatedArray1 };
+// By using set:
+function findDuplicateUsingSet(arr) {
+  let removeDuplicate = new Set(arr);
+     uniqueArray=[...removeDuplicate];
+     return uniqueArray;
+}
+module.exports = {
+  findDuplicate,
+  findRepeatedArray,
+  findRepeatedArray1,
+  findDuplicateUsingSet,
+};

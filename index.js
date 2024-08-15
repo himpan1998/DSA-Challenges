@@ -36,6 +36,7 @@ const {
   findDuplicate,
   findRepeatedArray,
   findRepeatedArray1,
+  findDuplicateUsingSet,
 } = require("./problems/basic-problems/array-problems/array-duplicate");
 // Execute the problems
 const {
@@ -79,6 +80,7 @@ const {
 // console.log(arrayLargestNum([1, 2, 3, 19]));
 // console.log(arraySmallestNumber([1, 2, 3, 19]));
 // console.log(findDuplicate([1, 2, 3, 4, 5, 3, 2]));
+console.log(findDuplicateUsingSet([1, 2, 3, 4, 5, 3, 2]));
 // console.log(findRepeatedArray([1, 2, 3, 4, 5, 3, 2]));
 // console.log(findRepeatedArray1([1, 2, 3, 4, 5, 3, 2,4]));
 // console.log(findUniqueElements([1, 2, 3, 4, 5, 3, 2, 4]));
@@ -86,4 +88,4 @@ const {
 // console.log(countCharacter("Hello World", "l"));
 // console.log(countCharacter2("Hello World", "O"));
 // console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
-console.log(countFrequency([1,2,3,4,5,3,2,2]));
+// console.log(countFrequency([1,2,3,4,5,3,2,2]));
