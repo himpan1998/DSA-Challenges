@@ -36,7 +36,7 @@ const {
   findDuplicate,
   findRepeatedArray,
   findRepeatedArray1,
-} = require("./problems/basic-problems/array-problems/find-duplicate(repeated)-element");
+} = require("./problems/basic-problems/array-problems/find-duplicate(repeated)-element-in-array");
 // Execute the problems
 const {
   findUniqueElements,
