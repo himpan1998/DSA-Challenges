@@ -7,7 +7,7 @@
 /**
  * Finds the first element in the array that does not repeat.
  *
- * @param {Array<number>} arr - The array to search for the non-repeating element.
+ * @param {number[]} arr - The array to search for the non-repeating element.
  * @returns {number} - The first non-repeating element in the array.
  */
 
