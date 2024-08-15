@@ -57,6 +57,8 @@ const {
 const {
   countFrequency,
 } = require("./problems/basic-problems/array-problems/count-frequency-of-element-array");
+
+const {findNonRepeatedElement} =require("./problems/basic-problems/array-problems/first-non-repeating-element-in-array")
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -89,3 +91,4 @@ const {
 // console.log(countCharacter2("Hello World", "O"));
 // console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
 // console.log(countFrequency([1,2,3,4,5,3,2,2]));
+// console.log(findNonRepeatedElement([2,3,4,5,3,2,2]));
