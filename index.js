@@ -86,4 +86,4 @@ const {
 // console.log(countCharacter("Hello World", "l"));
 // console.log(countCharacter2("Hello World", "O"));
 // console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
-console.log(countFrequency([1,2,3,4,5,3,2,2]));
+// console.log(countFrequency([1,2,3,4,5,3,2,2]));
