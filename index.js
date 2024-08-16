@@ -36,10 +36,11 @@ const {
   findDuplicate,
   findRepeatedArray,
   findRepeatedArray1,
-} = require("./problems/basic-problems/array-problems/array-duplicate");
+} = require("./problems/basic-problems/array-problems/find-duplicate(repeated)-element-in-array");
 // Execute the problems
 const {
   findUniqueElements,
+  findDistinctArray,
 } = require("./problems/basic-problems/array-problems/distinct-element-in-array");
 
 const {
@@ -56,6 +57,10 @@ const {
 const {
   countFrequency,
 } = require("./problems/basic-problems/array-problems/count-frequency-of-element-array");
+
+const {findNonRepeatedElement} =require("./problems/basic-problems/array-problems/first-non-repeating-element-in-array")
+
+const {removeDuplicateElements}=require("./problems/basic-problems/array-problems/remove-duplicates-from-array")
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -82,8 +87,11 @@ const {
 // console.log(findRepeatedArray([1, 2, 3, 4, 5, 3, 2]));
 // console.log(findRepeatedArray1([1, 2, 3, 4, 5, 3, 2,4]));
 // console.log(findUniqueElements([1, 2, 3, 4, 5, 3, 2, 4]));
+// console.log(findDistinctArray([1, 2, 3, 4, 5, 3, 2, 4]));
 // console.log(checkAnagram("Hello","elloH"));
 // console.log(countCharacter("Hello World", "l"));
 // console.log(countCharacter2("Hello World", "O"));
 // console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
 // console.log(countFrequency([1,2,3,4,5,3,2,2]));
+// console.log(findNonRepeatedElement([2,3,4,5,3,2,2]));
+console.log(removeDuplicateElements([1, 2, 3, 4, 5, 3, 2, 2]));
