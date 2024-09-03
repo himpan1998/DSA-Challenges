@@ -42,7 +42,16 @@ const {
   findUniqueElements,
   findDistinctArray,
 } = require("./problems/basic-problems/array-problems/distinct-element-in-array");
+const {
+  findNonRepeatedElement,
+} = require("./problems/basic-problems/array-problems/first-non-repeating-element-in-array");
 
+const {
+  removeDuplicateElements,
+} = require("./problems/basic-problems/array-problems/remove-duplicates-from-array");
+const {
+  missingNumberArray,
+} = require("./problems/basic-problems/array-problems/missing-number-in-array");
 const {
   checkAnagram,
 } = require("./problems/basic-problems/string-problems/anagram-check");
@@ -57,10 +66,18 @@ const {
 const {
   countFrequency,
 } = require("./problems/basic-problems/array-problems/count-frequency-of-element-array");
-
-const {findNonRepeatedElement} =require("./problems/basic-problems/array-problems/first-non-repeating-element-in-array")
-
-const {removeDuplicateElements}=require("./problems/basic-problems/array-problems/remove-duplicates-from-array")
+const {
+  missingArrayElement,
+} = require("./problems/basic-problems/array-problems/missing-number-with-count-given");
+const {
+  countFrequencyElement,
+} = require("./problems/basic-problems/object-problems/frequency-counter");
+const {
+  List,
+} = require("./problems/basic-problems/LinkedList/linked-list-concept");
+const {
+  ListLinked,
+} = require("./problems/basic-problems/LinkedList/traversing-linked-list");
 // Execute the problems
 
 // console.log(checkEvenOdd(6));
@@ -94,4 +111,9 @@ const {removeDuplicateElements}=require("./problems/basic-problems/array-problem
 // console.log(longestConsecutiveSequence([100, 4, 200, 1, 3, 2]));
 // console.log(countFrequency([1,2,3,4,5,3,2,2]));
 // console.log(findNonRepeatedElement([2,3,4,5,3,2,2]));
-console.log(removeDuplicateElements([1, 2, 3, 4, 5, 3, 2, 2]));
+// console.log(removeDuplicateElements([1, 2, 3, 4, 5, 3, 2, 2]));
+// console.log(missingNumberArray([1, 2, 4, 6]));
+// console.log(missingArrayElement([1, 2, 3, 5], 10));
+// console.log(countFrequencyElement([1,1,1, 2, 2,3,3,3, 5]));
+// console.log(list); 
+// 

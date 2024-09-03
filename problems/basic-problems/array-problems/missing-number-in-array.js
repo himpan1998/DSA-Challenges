@@ -7,6 +7,13 @@
 /**
  * Finds the missing numbers in an array that should contain all numbers from 1 to n.
  *
- * @param {Array<number>} arr - The array containing numbers from 1 to n with some numbers missing.
- * @returns {Array<number>} - An array containing the missing numbers.
+ * @param {number[]} arr - The array containing numbers from 1 to n with some numbers missing.
+ * @returns {number[]} - An array containing the missing numbers.
  */
+
+function missingNumberArray(arr){
+        
+
+}
+
+module.exports = { missingNumberArray };
