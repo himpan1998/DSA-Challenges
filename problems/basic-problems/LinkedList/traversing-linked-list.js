@@ -21,7 +21,6 @@ class ListLinked {
     let currentNode = this.head;
     while (counter < this.size) {
       console.log(currentNode);
-      
       currentNode = currentNode.next;
       counter++;
     }
@@ -34,5 +33,3 @@ list.appendNode(400);
 list.appendNode(500);
 // console.log(list);
 list.traversing();
-
-module.exports = { ListLinked };

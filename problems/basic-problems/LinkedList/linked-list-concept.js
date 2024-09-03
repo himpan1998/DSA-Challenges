@@ -19,9 +19,7 @@ class List {
 }
 
 let list = new List(200); // object of List class
-// list.appendNode(300);
-// list.appendNode(400);
-// list.appendNode(500);
-// console.log(list);
-
-// module.exports = { List };
+list.appendNode(300);
+list.appendNode(400);
+list.appendNode(500);
+console.log(list);
