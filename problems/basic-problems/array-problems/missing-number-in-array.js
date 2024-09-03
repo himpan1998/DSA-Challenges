@@ -11,9 +11,13 @@
  * @returns {number[]} - An array containing the missing numbers.
  */
 
-function missingNumberArray(arr){
-        
+
+function missingNumber(){
 
 }
 
-module.exports = { missingNumberArray };
+
+
+module.exports = {
+  missingNumber
+};
