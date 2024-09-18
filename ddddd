@@ -1,0 +1,11 @@
+Process Flow with Steps, Arrows, and Users
+Step	Stage Name	Actioned by/User
+Step-1➔	Requisition creation (CRM)➔	Distributor
+Step-2➔	Loading program submission (CRM)➔	Distributor
+Step-3➔	HO, 1st approval basis credit analysis (CRM)➔	Head Office-Operations
+Step-4➔	HO, 2nd approval for SKU selection (CRM)➔	Head Office-Operations
+Step-5➔	DA creation from CRM using SAP API (CRM + SAP)➔	Head Office-Operations
+Step-6➔	Dispatch plan sent to plant operations (over mail)➔	Plant-operations
+Step-7➔	Plant will punch delivery challan and invoice against that DA (SAP)➔	Plant-operations
+Step-8➔	Invoice and Dispatch details fetched in CRM via SAP API➔	-
+
