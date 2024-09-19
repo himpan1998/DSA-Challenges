@@ -1,0 +1,727 @@
+<?php
+
+namespace App\Models\Partners\Dealer;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use AccountBrandings;
+use AccountTaskMasters;
+use AccountRatingMapping;
+use Distributors;
+use SubDealers;
+use States;
+use Addresses;
+use Leads;
+use ProfileMaster;
+use StatusMaster;
+use AccountPartners;
+use MonthlyOutstandings;
+use DocumentMasters;
+use OtpRequests;
+use DealerLedger;
+use DealerTdsLedger;
+use AccountEmployees;
+use AccountAreaAccess;
+use AccountStates;
+use AccountDistricts;
+use AccountBlocks;
+use AccountAreas;
+use DealerBrandings;
+use DispatchItems;
+use Carbon\Carbon;
+use DealersTvsA;
+use DealersTvsADemo;
+use DealersAnnualTarget;
+use Users;
+use SapMasters;
+use DB;
+use AccountConversionLog;
+use DealerSecurityLedger;
+use AccountAppointees;
+use Fabricators;
+use AccountLoginlogs;
+use SubdealerExceptionList;
+use DispatchSummaries;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Products;
+use LiftingUtilizationStocks;
+use MasonLiftingRequests;
+use SturdflexRetailers;
+
+class tbl_dealer_master extends Model {
+
+    use SoftDeletes;
+    use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
+    protected $accountType      = 39;
+    protected $accountTypeAlias = 'Dealers';
+    protected $primaryKey       = 'dealer_id';
+    protected $guarded          = ['dealer_id'];
+    protected $casts            = [
+        'products' => 'json'
+    ];
+    protected $appends = ['account_name'];
+
+    /** get whatsapp_no attribute form whatsapp_no column */
+    public function whatsappNo(): Attribute {
+        return Attribute::make(
+            get: fn($value) => $value != null ? $value : ''
+        );
+    }
+
+    /** get gst_no attribute form gst_no column */
+    public function gstNo(): Attribute {
+        return Attribute::make(
+            get: fn($value) => $value != null ? $value : ''
+        );
+    }
+
+    /** get pan_no attribute form pan_no column */
+    public function panNo(): Attribute {
+        return Attribute::make(
+            get: fn($value) => $value != null ? $value : ''
+        );
+    }
+
+    /** get epic_no attribute form epic_no column */
+    public function epicNo(): Attribute {
+        return Attribute::make(
+            get: fn($value) => $value != null ? $value : ''
+        );
+    }
+
+    /** get aadhaar_no attribute form aadhaar_no column */
+    public function aadhaarNo(): Attribute {
+        return Attribute::make(
+            get: fn($value) => $value != null ? $value : ''
+        );
+    }
+
+    /** get account_name attrubute from name column  */
+    public function accountName(): Attribute {
+        return Attribute::make(
+            get: fn() => $this->name
+        );
+    }
+
+    /**
+     * Model attribute to get the active sap code
+     * associated with this dealer as per product
+     * @return \Illuminate\Support\Collection $sapCodeRow
+     * */
+    public function getActiveSapCodeAttribute() {
+        $sapCodeRow = $this->get_account_sap()->where('is_active', 1)->where('product_id', $this->products)->first();
+        return $sapCodeRow;
+    }
+
+    /**
+     * get all stored address of dealer
+     * @return relation
+     */
+    public function addresses() {
+        return $this->hasMany(Addresses::class, 'account_id', 'dealer_id');
+    }
+
+    /**
+     * get the active and primary address of dealer
+     * @return relation
+     */
+    public function accountAddress() {
+        $parameters = [
+            'account_type' => 39,
+            'address_type' => 3,
+            'is_primary'   => 1,
+            'is_active'    => 1
+        ];
+        return $this->hasOne(Addresses::class, 'account_id', 'dealer_id')
+            ->select('account_id', 'address_line_1', 'address_line_2', 'police_station', 'post_office',
+                'city_name', 'landmark', 'pin_code', 'state_id', 'district_id', 'block_id',
+                'latitude', 'longitude', 'geo_location', 'store_image'
+            )
+            ->where($parameters);
+    }
+
+    /** get the active and primary address of this dealer */
+    public function account_address(): HasOne {
+        $parameters = [
+            'account_type' => $this->accountType,
+            'address_type' => 3,
+            'is_primary'   => 1,
+            'is_active'    => 1
+        ];
+        return $this->hasOne(Addresses::class, 'account_id', 'dealer_id')
+            ->select('account_id', 'address_line_1', 'address_line_2', 'police_station', 'post_office',
+                'city_name', 'landmark', 'pin_code', 'state_id', 'district_id', 'block_id',
+                'latitude', 'longitude', 'geo_location', 'store_image'
+            )
+            ->where($parameters);
+    }
+
+    /** dealer primary address * */
+    public function address() {
+        return $this->hasOne(Addresses::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /**
+     * get the satus data by status id
+     * @return realtion
+     */
+    public function status_code() {
+        return $this->hasOne(StatusMaster::class, 'lead_type', 'status')->select('lead_type', 'type_name', 'style');
+    }
+
+    /**
+     * get the referrer data by referred_by
+     * @return realtion
+     */
+    public function referrer() {
+        return $this->belongsTo(Users::class, 'referred_by', 'id')->select('id', 'name');
+    }
+
+    /**
+     * get the state name and id
+     * @return relation
+     */
+    public function state_info() {
+        return $this->hasOne(States::class, 'state_id', 'state_id')->select('state_id', 'state_name');
+    }
+
+    /* get state */
+
+    public function dispatch_item() {
+        return $this->hasOne('App\Models\tbl_dispatch_item_masters', 'sap_id', 'sap_id');
+    }
+
+    /**
+     *  get the lead information
+     * @return relation
+     */
+    public function lead_info() {
+        return $this->hasOne(Leads::class, 'lead_id', 'lead_id');
+    }
+
+    /**
+     * get the profile data
+     * @return relation
+     */
+    public function get_type() {
+        return $this->hasOne(ProfileMaster::class, 'id', 'account_type');
+    }
+
+    /**
+     * get the documents
+     * @return relation
+     */
+    public function documents() {
+        return $this->hasMany(DocumentMasters::class, 'account_type', 'dealer_id');
+    }
+
+    /** Get tagged distributor data associated with this dealer */
+    public function parent_account(): BelongsTo {
+        return $this->belongsTo(Distributors::class, 'distributor_id')->select('distributor_id', 'name', 'mobile_no', 'email', 'user_id', 'status');
+    }
+
+    /**
+     * get the area of operation
+     * @return relation
+     * */
+    public function areaOfOperation() {
+        return $this->hasOne(AccountAreaAccess::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** get mapped state */
+    public function get_state() {
+        return $this->hasMany(AccountStates::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** get mapped district */
+    public function get_district() {
+        return $this->hasMany(AccountDistricts::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** get mapped block */
+    public function get_block() {
+        return $this->hasMany(AccountBlocks::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** get mapped area */
+    public function get_area() {
+        return $this->hasMany(AccountAreas::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /**
+     * get assigned district for dealers
+     * @return relation
+     */
+    public function get_dealer_by_district() {
+        //return $this->hasMany(AccountAreaAccess::class, 'account_id', 'dealer_id')->where('account_type', 39); //profile id of dealer
+        return $this->hasOne(AccountAreaAccess::class, 'account_id', 'dealer_id')->where('account_type', 39); //profile id of dealer
+    }
+
+    /**
+     * get outstandings of dealer
+     * @return relation
+     */
+    public function outstanding_data() {
+        $columns = ['id', 'as_on_date', 'sap_code', 'company', 'net_amount', 'lessthan31days', '31to45days', '46to60days', '61to90days', '91to120days', '121to9999days'];
+        return $this->hasMany(MonthlyOutstandings::class, 'sap_code', 'sap_code')->select($columns);
+    }
+
+    /**
+     * get the dispatch by sap
+     * @return relation
+     */
+    public function dealer_lifting() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code');
+    }
+
+    public function currentMonthLifting() {
+        return $this->dealer_lifting();
+    }
+
+    public function lastMonthLifting() {
+        return $this->dealer_lifting();
+    }
+
+    public function lastYearLifting() {
+        return $this->dealer_lifting();
+    }
+
+    /**
+     * get the first lifting by sap
+     * @return relation
+     */
+    public function first_lifting() {
+        return $this->hasOne(DispatchItems::class, 'sap_id', 'sap_code')->orderBy('date', 'asc');
+    }
+
+    /**
+     * get the first lifting by sap
+     * @return relation
+     */
+    public function last_lifting() {
+        return $this->hasOne(DispatchItems::class, 'sap_id', 'sap_code')->orderBy('date', 'desc');
+    }
+
+    /**
+     * returns total lifting in curent FY for branding requistion list
+     */
+    public function total_lifting_cfy() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code')->whereBetween('date', getFinancialYearDates()[0])->select(\DB::raw('sum(quantity) as total'), 'sap_id')->groupBy('sap_id');
+    }
+
+    /**
+     * returns total lifting in last FY for branding requistion list
+     */
+    public function total_lifting_lfy() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code')->whereBetween('date', getFinancialYearDates()[1])->select(\DB::raw('sum(quantity) as total'), 'sap_id')->groupBy('sap_id');
+    }
+
+    /**
+     * returns total lifting in before last FY for branding requistion list
+     */
+    public function total_lifting_before_lfy() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code')->whereBetween('date', getFinancialYearDates()[2])->select(\DB::raw('sum(quantity) as total'), 'sap_id')->groupBy('sap_id');
+    }
+
+    /**
+     * returns last dispatch date for branding requistion list
+     */
+    public function last_dispatch_date() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code')->orderBy('date', 'desc')->limit(1);
+    }
+
+    /**
+     * get all subdealers by dealer id
+     * @return relation
+     */
+    public function mapped_subdealers() {
+        return $this->hasMany(SubDealers::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** get responsible employee data */
+    public function tagged_employee() {
+        return $this->hasMany(AccountEmployees::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /**
+     * get task morph relation
+     * @return relation
+     */
+    public function get_account_task() {
+        return $this->hasMany(AccountTaskMasters::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /**
+     * returns distributors past tasks
+     * @return relation
+     */
+    public function get_account_past_tasks() {
+        $from_date = \Carbon\Carbon::today()->subDays(30);
+        $today     = \Carbon\Carbon::today();
+        return $this->hasMany(AccountTaskMasters::class, 'account_id', 'dealer_id')
+            ->where('account_type', 39)
+            ->whereDate('task_due_date', '>=', $from_date)
+            ->whereDate('task_due_date', '<=', $today)
+            ->where('status', 1);
+    }
+
+    /**
+     * returns distributors today's tasks
+     * @return relation
+     */
+    public function get_account_todays_tasks() {
+        $today = \Carbon\Carbon::today();
+        return $this->hasMany(AccountTaskMasters::class, 'account_id', 'dealer_id')
+            ->where('account_type', 39)
+            ->whereDate('task_due_date', $today)
+            ->whereIn('status', [0, 2]);
+    }
+
+    /**
+     * returns dealers upcoming tasks
+     * @return relation
+     */
+    public function get_account_upcoming_tasks() {
+        $today   = \Carbon\Carbon::today();
+        $to_date = \Carbon\Carbon::today()->addDays(30);
+        return $this->hasMany(AccountTaskMasters::class, 'account_id', 'dealer_id')
+            ->where('account_type', 39)
+            ->whereDate('task_due_date', '>', $today)
+            ->whereDate('task_due_date', '<=', $to_date)
+            ->whereIn('status', [0, 2]);
+    }
+
+    /**
+     * returns dealers last completed visit data
+     * @return relation
+     */
+    public function get_last_task() {
+        return $this->hasOne(AccountTaskMasters::class, 'account_id', 'dealer_id')
+            ->where(['account_type' => 39, 'status' => 1, 'task_type' => 5])
+            ->select('account_id', 'task_description as description', 'followup_persons', 'task_due_date')
+            ->orderBy('task_due_date', 'desc');
+    }
+
+    /**
+     * returns dealers all visit data
+     * @return relation
+     */
+    public function visit_records() {
+        return $this->hasMany(AccountTaskMasters::class, 'account_id', 'dealer_id')
+            ->where('account_type', 39)
+            ->where('task_type', 5);
+    }
+
+    /**
+     * returns dealers last visit data
+     * @return relation
+     */
+    public function last_visit() {
+        return $this->hasOne(AccountTaskMasters::class, 'account_id', 'dealer_id')->select('account_task_id', 'task_code', 'account_id', 'account_type',
+            'task_title', 'task_due_date', 'assigned_to', 'assigned_by', 'created_by')
+            ->where('account_type', 39)
+            ->where('task_type', 5)
+            ->where('status', 1) // 1 = completed task
+            ->orderBy('task_due_date', 'DESC');
+    }
+
+    /** sap data */
+    public function sap_information() {
+        return $this->hasMany(AccountPartners::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /**
+     * returns all ledger data
+     * @return relation
+     */
+    public function ledger() {
+        return $this->hasMany(DealerLedger::class, 'customer_id', 'sap_code');
+    }
+
+    /** returns all tds ledger data */
+    public function tds_ledger() {
+        return $this->hasMany(DealerTdsLedger::class, 'customer_id', 'sap_code');
+    }
+
+    /**
+     * returns all ledger data
+     * @return relation
+     */
+    public function security_ledger() {
+        return $this->hasMany(DealerSecurityLedger::class, 'customer', 'sap_code');
+    }
+
+    public function security_ledger_9() {
+        return $this->hasOne(DealerSecurityLedger::class, 'customer', 'sap_code')->where('gl_code', 7)->selectRaw('id, customer, gl_code, (sum(cr_amt) - sum(dr_amt)) as total_sd_9')->groupBy('customer');
+    }
+
+    public function security_ledger_14() {
+        return $this->hasOne(DealerSecurityLedger::class, 'customer', 'sap_code')->where('gl_code', 'G')->selectRaw('id, customer, gl_code, (sum(cr_amt) - sum(dr_amt)) as total_sd_14')->groupBy('customer');
+    }
+
+    public function security_ledger_previous_year() {
+        return $this->hasOne(DealerSecurityLedger::class, 'customer', 'sap_code')->selectRaw('customer, (sum(cr_amt) - sum(dr_amt)) as total_sd')->groupBy('customer');
+    }
+
+    public function security_ledger_opening_balance() {
+        return $this->hasOne(DealerSecurityLedger::class, 'customer', 'sap_code')->where('gl_code', '')->selectRaw('customer, (sum(cr_amt) - sum(dr_amt)) as total_sd')->groupBy('customer');
+    }
+
+    /**
+     * get all dispatch by dealer sap code in master table
+     * @return relation
+     * @deprecated
+     */
+    public function dispatch_items() {
+        return $this->hasMany(DispatchItems::class, 'sap_id', 'sap_code');
+    }
+
+    /** returns current month total lifting quantity */
+    public function total_current_month_lifting() {
+        return $this->hasOne(DispatchItems::class, 'sap_id', 'sap_code')
+            ->whereMonth('date', date('m'))
+            ->whereYear('date', date('Y'))
+            ->select(DB::raw('sum(quantity) as total'), 'sap_id')->groupBy('sap_id');
+    }
+
+    /** returns last six month total lifting quantity */
+    public function total_last_six_month_lifting() {
+        $start_date = Carbon::now()->subMonths(6)->startOfMonth()->toDateString();
+        $end_date   = Carbon::now()->subMonths(1)->endOfMonth()->toDateString();
+
+        return $this->hasOne(DispatchItems::class, 'sap_id', 'sap_code')
+            ->whereBetween('date', [$start_date, $end_date])
+            ->select(DB::raw('sum(quantity) as total'), 'sap_id')->groupBy('sap_id');
+    }
+
+    /** returns all t vs a records of a dealer * */
+    public function t_vs_a() {
+        return $this->hasMany(DealersTvsA::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** returns all t vs a records of a dealer * */
+    public function t_vs_a_demo() {
+        return $this->hasMany(DealersTvsADemo::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** returns dealers annual target * */
+    public function annual_target() {
+        return $this->belongsTo(DealersAnnualTarget::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** returns dealers annual target of current financial year **/
+    public function cur_finyear_annual_target() {
+        $financial_year = currentFinancialYear();
+        return $this->belongsTo(DealersAnnualTarget::class, 'dealer_id', 'dealer_id')->where('financial_year', $financial_year);
+    }
+
+    /** returns dealers cumulative sales of current financial year **/
+    public function cur_finyear_cumulative_sales() {
+        $financial_year = currentFinancialYear();
+        return $this->hasOne(DealersTvsADemo::class, 'dealer_id', 'dealer_id')->where('financial_year', $financial_year)->orderBy('id', 'desc');
+    }
+
+    /**
+     * get all requisition data by dealer id
+     * @return relation
+     */
+    public function requisionData() {
+        return $this->hasMany(BrandingRequisitions::class, 'account_id', 'dealer_id')->where('account_type', 'dealer')->latest();
+    }
+
+    /**
+     * returns morph relation for  branding requisition
+     * @return relation
+     */
+    public function mappedAccount() {
+        return $this->morphOne(BrandingRequisitions::class, 'account');
+    }
+
+    /**
+     * get branding data by old id
+     * @return relation
+     */
+    public function dealer_branding() {
+        return $this->belongsTo(DealerBrandings::class, 'migration_id', 'dealer_id');
+    }
+
+    /**
+     * get all dealer branding data by dealer id
+     * @return relation
+     */
+    public function all_dealer_branding() {
+        return $this->hasMany(DealerBrandings::class, 'dealer_id', 'dealer_id')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * get all NLB branding data by dealer id
+     * @return relation
+     */
+    public function dealer_branding_NLB() {
+        return $this->hasOne(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 1)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * get all GSB branding data by dealer id
+     * @return relation
+     */
+    public function dealer_branding_GSB() {
+        return $this->hasOne(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 2)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * get all WALL PAINT branding data by dealer id
+     * @return relation
+     */
+    public function dealer_branding_Wall_Painting() {
+        return $this->hasOne(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 3)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * get all IN SHOP branding data by dealer id
+     * @return relation
+     */
+    public function dealer_branding_Inshop() {
+        return $this->hasOne(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 4)->orderBy('created_at', 'desc');
+    }
+
+    /** returns all nlb type branding * */
+    public function NLB() {
+        return $this->hasMany(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 1)->orderBy('created_at', 'desc')->take(20);
+    }
+
+    /** returns all gsb type branding * */
+    public function GSB() {
+        return $this->hasMany(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 2)->orderBy('created_at', 'desc')->take(20);
+    }
+
+    /** returns all wall painting type branding * */
+    public function Wall_Painting() {
+        return $this->hasMany(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 3)->orderBy('created_at', 'desc')->take(20);
+    }
+
+    /** returns all inshop type branding * */
+    public function Inshop() {
+        return $this->hasMany(DealerBrandings::class, 'dealer_id', 'dealer_id')->where('type_id', 4)->orderBy('created_at', 'desc')->take(20);
+    }
+
+    /** returns all project liftings (ihb) */
+    public function ihblifting() {
+        return $this->hasMany('App\Models\Liftings\Ihb\tbl_ihb_lifting', 'dealer_id', 'dealer_id')
+            ->where('dealer_type', 39)
+            ->where('uploaded_from', 'retail app')
+            ->orderBy('approval_date', 'desc');
+    }
+
+    /**
+     * get cerator info
+     * @return relation
+     */
+    public function created_by_user() {
+        return $this->belongsTo(Users::class, 'created_by', 'id');
+    }
+
+    /**
+     * get single sap code by  dealer id
+     * @return relation
+     */
+    public function get_dealer_sap() {
+        return $this->hasOne(SapMasters::class, 'account_id', 'dealer_id')->select('account_id', 'account_type', 'ship_to')->where('account_type', 39);
+    }
+
+    /**
+     * get all sap code by dealer id
+     * @return relation
+     */
+    public function get_account_sap() {
+        return $this->hasMany(SapMasters::class, 'account_id', 'dealer_id')->select('id', 'account_id', 'account_type', 'ship_to', 'sold_to', 'pay_to', 'is_active', 'product_id')->where('account_type', 39);
+    }
+
+    /**
+     * get all sap code by dealer id
+     * @return relation
+     */
+    public function sap_code() {
+        return $this->hasMany(SapMasters::class, 'account_id', 'dealer_id')->select('id', 'account_id', 'account_type', 'ship_to', 'sold_to', 'pay_to', 'is_active', 'product_id')->where('account_type', 39);
+    }
+
+    /**
+     * get all conversion log
+     * @return relation
+     */
+    public function account_conversion_data() {
+        return $this->hasMany(AccountConversionLog::class, 'account_id', 'dealer_id')->where(['account_type' => 39, 'account_state' => 1]);
+    }
+
+    public function lead_conversion_data() {
+        return $this->hasMany(AccountConversionLog::class, 'lead_id', 'lead_id')->where(['account_state' => 0]);
+    }
+
+    /** query scopes */
+    public function scopeWithAndWhereHas($query, $relation, $constraint) {
+        return $query->whereHas($relation, $constraint)->with([$relation => $constraint]);
+    }
+
+    /** get last otp requested by dealer */
+    public function requested_otp() {
+        return $this->hasMany(OtpRequests::class, 'user_id', 'user_id')->select('user_id', 'otp', 'created_at')->latest();
+    }
+
+    /** get dealer user details */
+    public function user() {
+        return $this->belongsTo(Users::class, 'user_id', 'id');
+    }
+
+    /** get appointed employee data */
+    public function appointed_employee() {
+        return $this->hasMany(AccountAppointees::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** get mapped fabricators with dealer **/
+    public function mapped_fabricators() {
+        return $this->hasMany(Fabricators::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** returns account login log data */
+    public function last_app_open() {
+        return $this->hasOne(AccountLoginlogs::class, 'account_id', 'dealer_id')->where('account_type', 39)->latest();
+    }
+
+    /** Security Deposit Request Exception List */
+    public function sd_exception() {
+        return $this->hasOne(SubdealerExceptionList::class, 'subdealer_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /** Returns dealer dispatch summary data */
+    public function dispatch_summary() {
+        return $this->hasMany(DispatchSummaries::class, 'account_id', 'dealer_id')->where('account_type', 39);
+    }
+
+    /* get information about products */
+    public function mapped_products() {
+        return $this->belongsToJson(Products::class, 'products', 'product_id')->select('product_id', 'product_name');
+    }
+
+    public function utilization_stock() {
+        return $this->hasOne(LiftingUtilizationStocks::class, 'dealer_id', 'dealer_id');
+    }
+
+    /** Get account data associated with this dealer */
+    public function account_rating(): HasOne {
+        return $this->hasOne(AccountRatingMapping::class, 'account_id', 'dealer_id')->where('account_type', $this->accountTypeAlias)->with('rating_master');
+    }
+
+    /* get account brandings data */
+    public function account_brandings(): HasMany {
+        return $this->hasMany(AccountBrandings::class, 'account_id', 'dealer_id')->where('account_type', 39)->orderBy('created_by', 'desc');
+    }
+
+    /* get mason liftings associated with this dealer */
+    public function mason_liftings(): HasMany {
+        return $this->hasMany(MasonLiftingRequests::class, 'lifted_from_account_id', 'dealer_id')->where('lifted_from_account_type', $this->accountTypeAlias);
+    }
+}

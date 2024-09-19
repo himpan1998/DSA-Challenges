@@ -1,0 +1,705 @@
+import { exportDataToFile } from '../../misc/export.js';
+
+const now = new Date();
+const accountStatus = '5,7';
+var compCount = 1;
+var productCount = 1;
+var compititorsDataSource = [];
+var productsDataSource = [];
+var dealerDataSource = [];
+var dealerData = [];
+var variantDataSource = [];
+
+$('.preloader2').toggleClass('d-none');
+var FORM_ELEM;
+
+getRfqDependencies(['competitors', 'products', 'dealer'], 'general')
+  .then(function (data) {
+    compititorsDataSource = data[0];
+    productsDataSource = data[1];
+    dealerDataSource = data[2];
+    dealerDataSource.map(function (d) {
+      return dealerData.push({
+        id: d.dealer_id,
+        name: d.name
+      });
+    });
+    productsDataSource.map(function (d) {
+      let variants = d.variants;
+      return variants.map(function (v) {
+        variantDataSource.push({
+          id: v.id,
+          name: v.name,
+          quantity: v.quantity,
+          uom: v.uom,
+          price: v.price
+        });
+      });
+    });
+
+    loadForm();
+    $('.preloader2').toggleClass('d-none');
+    FORM_ELEM = $('#pricingRequestForm').dxForm('instance');
+    let dealerNameEditor = FORM_ELEM.getEditor('dealer');
+    // console.log('dealer', dealerDataSource);
+
+    dealerNameEditor.option(
+      'dataSource',
+      new DevExpress.data.DataSource({
+        store: dealerDataSource,
+        paginate: true,
+        pageSize: 10
+      })
+    );
+  }, console.log('dealerData', dealerData.id))
+  .catch(function (error) {
+    console.log('error', error);
+    $('.preloader2').toggleClass('d-none');
+  });
+
+let formData = {};
+let userSet = {
+  user_group: ['field_user_nonssil_groupset', 'field_user_ssil_groupset', 'ho_user_groupset'],
+  include_ho: true
+};
+
+function loadInitialData(e) {
+  let component = e.component;
+  let projectEditor = component.getEditor('project');
+  let paymentTermEditor = component.getEditor('payment_term');
+  let supplyMethodEditor = component.getEditor('supply_method');
+  let dealerNameEditor = component.getEditor('dealer');
+  console.log('dealerData', dealerNameEditor);
+  let bindData = [
+    {
+      __object: projectEditor,
+      key: 'projects'
+    },
+    {
+      __object: paymentTermEditor,
+      key: 'payment_terms'
+    },
+    {
+      __object: supplyMethodEditor,
+      key: 'supply_methods'
+    }
+  ];
+  getRfqDependencies(bindData);
+}
+
+function hasNumber(myString) {
+  return /\d/.test(myString);
+}
+
+function loadForm() {
+  let FORM = $('#pricingRequestForm')
+    .dxForm({
+      formData,
+      showColonAfterLabel: false,
+      labelMode: 'floating',
+      onContentReady: (e) => {
+        loadInitialData(e);
+      },
+      onFieldDataChanged: (e) => {
+        let dataField = e.dataField;
+
+        let dealerNameEditor = $('#pricingRequestForm').dxForm('instance').getEditor('dealer');
+        if (dataField === 'supply_method') {
+          if (e.value == 3) {
+            dealerNameEditor.option('visible', true);
+          } else {
+            dealerNameEditor.option('visible', false);
+          }
+        }
+        let dataFieldHasNumber = hasNumber(dataField);
+        // console.log('dataFieldHasNumber', dataFieldHasNumber);
+        if (dataFieldHasNumber) {
+          let lastIndex = dataField.lastIndexOf('_');
+          let originalDataField = dataField.substr(0, lastIndex);
+          let dataFieldIndex = dataField.substr(lastIndex + 1);
+          let value = e.value;
+          if (originalDataField === 'product') {
+            let variant = e.component.getEditor(`variants_${dataFieldIndex}`);
+            let filteredVariants = productsDataSource.filter((e) => e.id == value).map((d) => d.variants)[0];
+            variant?.option('items', filteredVariants);
+          }
+
+          if (originalDataField === 'request_type') {
+            if (e.value === 'Order by volume') {
+              e.component.getEditor(`variants_${dataFieldIndex}`)?.option('visible', false);
+            } else {
+              // console.log('in nop', dataFieldIndex);
+              e.component.getEditor(`variants_${dataFieldIndex}`)?.option('visible', true);
+            }
+          }
+        }
+      },
+      items: [
+        {
+          caption: 'Basic details',
+          itemType: 'group',
+          colCount: 4,
+          items: [
+            {
+              dataField: 'project',
+              editorType: 'dxSelectBox',
+              label: {
+                text: 'Project'
+              },
+              // validationRules: [
+              //   {
+              //     type: 'required',
+              //     message: 'Project is required'
+              //   }
+              // ],
+              editorOptions: {
+                searchEnabled: true,
+                valueExpr: 'account_id',
+                displayExpr: (item) => {
+                  if (item) {
+                    return `${item.account_name}`;
+                  }
+                },
+                showClearButton: true
+              }
+            },
+            {
+              dataField: 'payment_term',
+              editorType: 'dxSelectBox',
+              label: {
+                text: 'Payment terms'
+              },
+              validationRules: [
+                {
+                  type: 'required',
+                  message: 'Payment term is required'
+                }
+              ],
+              editorOptions: {
+                searchEnabled: true,
+                valueExpr: 'id',
+                displayExpr: 'days',
+                showClearButton: true
+              }
+            },
+            {
+              dataField: 'supply_method',
+              editorType: 'dxSelectBox',
+              label: {
+                text: 'Supply method'
+              },
+              validationRules: [
+                {
+                  type: 'required',
+                  message: 'Supply type is required'
+                }
+              ],
+              editorOptions: {
+                searchEnabled: true,
+                valueExpr: 'id',
+                displayExpr: 'name',
+                showClearButton: true
+              }
+            },
+            {
+              dataField: 'dealer',
+              caption: 'Dealer Name',
+              editorType: 'dxSelectBox',
+              label: {
+                text: 'Dealer Name'
+              },
+              // validationRules: [
+              //   {
+              //     type: 'required',
+              //     message: 'Dealer Name is required'
+              //   }
+              // ],
+              editorOptions: {
+                searchEnabled: true,
+                items: [],
+                valueExpr: 'id',
+                displayExpr: 'name',
+                showClearButton: true,
+                onValueChanged: (e) => {
+                  let dealerName = e.value;
+                  console.log('dealerName', dealerName);
+
+                  if (dealerName) {
+                    let dealer = dealerData.find((d) => d.name === dealerName);
+                    if (dealer) {
+                      e.component.option('value', dealer.dealer_id);
+                      // Assuming you have an account_id field in your form
+                      let accountIdEditor = $('#pricingRequestForm').dxForm('instance').getEditor('account_id');
+                      accountIdEditor.option('value', dealer.account_id);
+                    } else {
+                      console.error('Dealer not found');
+                    }
+                  }
+                }
+                // editorOptions: {
+                //   searchEnabled: true,
+                //   items: [],
+                //   valueExpr: 'id',
+                //   displayExpr: 'name',
+                //   showClearButton: true
+                // }
+              }
+            },
+            {
+              dataField: 'comments',
+              editorType: 'dxTextBox',
+              label: {
+                text: 'Comments'
+              }
+            }
+          ]
+        },
+        {
+          itemType: 'group',
+          caption: 'Competitors information',
+          name: 'compititors_group',
+
+          colCount: 1,
+          items: [
+            {
+              itemType: 'group',
+              colCount: 1,
+              name: 'compititors',
+              items: getCompititorOptions(compCount)
+            },
+            {
+              itemType: 'button',
+              horizontalAlignment: 'right',
+              verticalAlignment: 'top',
+              buttonOptions: {
+                icon: 'add',
+                text: 'Add more compititors',
+                elementAttr: {
+                  class: 'dx-success-button'
+                },
+                onClick(e) {
+                  compCount++;
+                  FORM_ELEM.itemOption('compititors_group.compititors', 'items', getCompititorOptions(compCount));
+                }
+              }
+            }
+          ]
+        },
+        {
+          itemType: 'group',
+          caption: 'Product information',
+          name: 'products_group',
+          //colCount: 1,
+          items: [
+            {
+              itemType: 'group',
+              colCount: 2,
+              name: 'products',
+              items: getProductOptions(productCount)
+            },
+            {
+              itemType: 'button',
+              horizontalAlignment: 'right',
+              buttonOptions: {
+                icon: 'add',
+                text: 'Add more products',
+                elementAttr: {
+                  class: 'dx-success-button'
+                },
+                onClick() {
+                  productCount++;
+                  FORM_ELEM.itemOption('products_group.products', 'items', getProductOptions(productCount));
+                }
+              }
+            }
+          ]
+        },
+        {
+          cssClass: 'text-right',
+          colSpan: 1,
+          template: (data, itemElement) => {
+            // $('<div class="m-1">')
+            //   .dxButton({
+            //     text: 'Submit & add more',
+            //     type: 'success',
+            //     elementAttr: {
+            //       class: 'btn dx-success-button'
+            //     },
+            //     useSubmitBehavior: true,
+            //     onClick(e) {
+            //       submitRequest();
+            //     }
+            //   })
+            //   .appendTo(itemElement);
+            $('<div class="m-1">')
+              .dxButton({
+                text: 'Submit & close',
+                type: 'success',
+                elementAttr: {
+                  class: 'btn dx-info-button'
+                },
+                useSubmitBehavior: true,
+                onClick(e) {
+                  submitRequest(1);
+                }
+              })
+              .appendTo(itemElement);
+
+            $(`<div id="clearButton" class="m-1">`)
+              .dxButton({
+                stylingMode: 'contained',
+                text: 'Reset',
+                type: 'danger',
+                elementAttr: {
+                  class: 'btn dx-error-button'
+                },
+                onClick(e) {
+                  FORM_ELEM.resetValues();
+                }
+              })
+              .appendTo(itemElement);
+          }
+        }
+      ]
+    })
+    .dxForm('instance');
+}
+
+function getCompititorOptions(noOfCompititors) {
+  const options = [];
+  for (let i = 0; i < noOfCompititors; i += 1) {
+    options.push(...generateNewCompititor(i));
+  }
+  return options;
+}
+
+function getProductOptions(noOfProducts) {
+  const options = [];
+  for (let i = 0; i < noOfProducts; i += 1) {
+    options.push(...generateNewProduct(i));
+  }
+  return options;
+}
+
+function generateNewCompititor(index) {
+  return [
+    {
+      dataField: `competitors_${index}`,
+      editorType: 'dxSelectBox',
+      label: {
+        text: 'Competitors'
+      },
+      // validationRules: [
+      //   {
+      //     type: 'required',
+      //     message: 'Compititor is required'
+      //   }
+      // ],
+      editorOptions: {
+        items: compititorsDataSource,
+        searchEnabled: true,
+        valueExpr: 'id',
+        displayExpr: 'name',
+        showClearButton: true
+      }
+    },
+    {
+      dataField: `competitor_image_${index}`,
+      editorType: 'dxFileUploader',
+      editorOptions: {
+        selectButtonText: 'Select image/pdf',
+        multiple: true,
+        labelText: '',
+        accept: 'image/*, application/pdf',
+        uploadMode: 'useForm',
+        inputAttr: { 'aria-label': 'Select image/pdf document' }
+      }
+    },
+    {
+      itemType: 'button',
+      visible: index > 0 ? true : false,
+      horizontalAlignment: 'right',
+      verticalAlignment: 'top',
+      buttonOptions: {
+        icon: 'trash',
+        onClick(e) {
+          compCount--;
+          FORM_ELEM.itemOption('compititors_group.compititors', 'items', getCompititorOptions(compCount));
+        }
+      }
+    }
+  ];
+}
+
+function generateNewProduct(index) {
+  let restItems = [
+    {
+      dataField: `quantity_${index}`,
+      editorType: 'dxNumberBox',
+      editorOptions: {},
+      label: {
+        text: `Quantity`
+      },
+      validationRules: [
+        {
+          type: 'required',
+          message: 'Quantity is required'
+        },
+        {
+          type: 'custom',
+          validationCallback: validateNumber,
+          message: 'Value should be greater than zero'
+        }
+      ]
+    },
+    {
+      dataField: `immediate_order_quantity_${index}`,
+      editorType: 'dxNumberBox',
+      editorOptions: {},
+      label: {
+        text: `Immediate Order Qty`
+      },
+      validationRules: [
+        {
+          type: 'required',
+          message: 'Immediate Order Quantity is required'
+        },
+        {
+          type: 'custom',
+          validationCallback: validateNumber,
+          message: 'Value should be greater than zero'
+        }
+      ]
+    },
+    {
+      dataField: `asking_price_${index}`,
+      editorType: 'dxNumberBox',
+      label: {
+        text: 'Asking price'
+      },
+      editorOptions: {},
+      validationRules: [
+        {
+          type: 'required',
+          message: 'Asking price is required'
+        },
+        {
+          type: 'custom',
+          validationCallback: validateNumber,
+          message: 'Value should be greater than zero'
+        }
+      ]
+    },
+    {
+      dataField: `comment_${index}`,
+      editorType: 'dxTextArea',
+      label: {
+        text: 'Any comment'
+      },
+      colSpan: 2
+    },
+    {
+      itemType: 'button',
+      visible: index > 0 ? true : false,
+      horizontalAlignment: 'right',
+      verticalAlignment: 'top',
+      colSpan: 2,
+      buttonOptions: {
+        icon: 'trash',
+        onClick(e) {
+          productCount--;
+          FORM_ELEM.itemOption('products_group.products', 'items', getProductOptions(productCount));
+        }
+      }
+    }
+  ];
+
+  return [
+    {
+      dataField: `request_type_${index}`,
+      colSpan: 2,
+      elementAttr: {
+        class: 'request_label'
+      },
+      label: {
+        text: 'Request type',
+        alignItemLabels: false,
+        alignItemLabelsInAllGroups: false,
+        location: 'left',
+        alignment: 'bottom',
+        marginTop: 10
+      },
+      validationRules: [
+        {
+          type: 'required',
+          message: 'Request type is required'
+        }
+      ],
+      editorType: 'dxRadioGroup',
+      editorOptions: {
+        elementAttr: {
+          class: 'request_type'
+        },
+        dataSource: ['Order by volume', 'Order by SKU'],
+        layout: 'horizontal' // or "vertical"
+      }
+    },
+    {
+      dataField: `product_${index}`,
+      editorType: 'dxSelectBox',
+      label: {
+        text: 'Products'
+      },
+      validationRules: [
+        {
+          type: 'required',
+          message: 'Product is required'
+        }
+      ],
+      editorOptions: {
+        items: productsDataSource,
+        searchEnabled: true,
+        valueExpr: 'id',
+        displayExpr: 'product_name',
+        showClearButton: true
+      }
+    },
+    {
+      dataField: `variants_${index}`,
+      label: {
+        text: 'Select product variant'
+      },
+      editorType: 'dxSelectBox',
+      editorOptions: {
+        items: variantDataSource,
+        searchEnabled: true,
+        showClearButton: true,
+        valueExpr: 'id',
+        displayExpr: (item) => {
+          if (item) {
+            return `${item.name} (₹ ${item.price})`;
+          }
+        }
+      }
+    },
+    ...restItems
+  ];
+}
+
+function convertDataset(dataset) {
+  // console.log('dataSet', dataset);
+  const convertedData = {
+    project_id: dataset.project,
+    payment_term_id: dataset.payment_term,
+    supply_method_id: dataset.supply_method,
+    // dealer_id:dataset.dealerData,
+    comments: dataset.comments,
+    competitors: [],
+    products: []
+  };
+
+  // Handle competitors
+  for (const key in dataset) {
+    if (key.startsWith('competitors_')) {
+      const KEY = parseInt(key.slice(-1));
+      let competitorImage = dataset[`competitor_image_${KEY}`];
+      if (competitorImage) {
+        competitorImage?.forEach((imageObject) => {
+          const image = imageObject || '';
+          convertedData.competitors.push({
+            competitor_id: dataset[`competitors_${KEY}`],
+            image: image
+          });
+        });
+      } else {
+        convertedData.competitors.push({
+          competitor_id: dataset[`competitors_${KEY}`],
+          image: null
+        });
+      }
+    }
+  }
+
+  // Handle products
+  for (const key in dataset) {
+    if (key.startsWith('product_')) {
+      const INDEX = parseInt(key.slice(-1));
+      if (INDEX <= productCount) {
+        convertedData.products.push({
+          product_id: dataset[`product_${INDEX}`],
+          variant_id: dataset[`variants_${INDEX}`],
+          request_type: dataset[`request_type_${INDEX}`],
+          quantity: dataset[`quantity_${INDEX}`],
+          immediate_order_quantity: dataset[`quantity_${INDEX}`],
+          asking_price: dataset[`asking_price_${INDEX}`],
+          comment: dataset[`comment_${INDEX}`]
+        });
+      }
+    }
+  }
+
+  return convertedData;
+}
+
+function submitRequest(type = 0) {
+  try {
+    $('.preloader2').toggleClass('d-none');
+    var form = $('#pricingRequestForm').dxForm('instance');
+    var formDataSet = new FormData();
+    if (form.validate().isValid) {
+      var formData = form.option().formData;
+      console.log('formData', formData);
+      var modifiedData = convertDataset(formData);
+      formDataSet.append('project_id', modifiedData.project_id);
+      formDataSet.append('payment_term_id', modifiedData.payment_term_id);
+      formDataSet.append('supply_method_id', modifiedData.supply_method_id);
+      formDataSet.append('comments', modifiedData.comments);
+      formDataSet.append('request_type', modifiedData.request_type);
+      let competitors = modifiedData.competitors;
+      for (let i = 0; i < competitors.length; i++) {
+        formDataSet.append('competitor_images[]', competitors[i].image);
+        formDataSet.append('competitor_image_sequence[]', competitors[i].competitor_id);
+      }
+      formDataSet.append('products', JSON.stringify(modifiedData.products));
+      formDataSet.append('competitors', JSON.stringify(modifiedData.competitors));
+
+      axios
+        .post(route('webapi.sturdflex.create_request'), formDataSet, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            Authorization: 'Bearer ' + BEARER
+          }
+        })
+        .then(function (response) {
+          toastr.success('Pricing request was submitted successfully');
+          FORM_ELEM.resetValues();
+          productCount = 1;
+          compCount = 1;
+          FORM_ELEM.itemOption('products_group.products', 'items', getProductOptions(productCount));
+          FORM_ELEM.itemOption('compititors_group.compititors', 'items', getCompititorOptions(compCount));
+          $('.preloader2').toggleClass('d-none');
+          // if (type === 1) {
+          //   setTimeout(() => {
+          //     window.close();
+          //   }, 200);
+          // }
+        })
+        .catch(function (error) {
+          console.log(error);
+          console.log('FAILURE!!');
+          toastr.error('Something went wrong');
+          $('.preloader2').toggleClass('d-none');
+        });
+    } else {
+      toastr.error('Please fill the required fields to continue');
+      $('.preloader2').toggleClass('d-none');
+    }
+  } catch (err) {
+    console.log('error in form submission', err);
+  }
+}
+
+function validateNumber(e) {
+  return e.value > 0 && e.value !== null;
+}
