@@ -1,0 +1,610 @@
+import { renderGridExportButton, renderSearchButton, renderFormResetButton } from '../../../../common/dx_button.js';
+
+const APPROVAL_DATA_GRID = 'orderApprovalDataGrid';
+const APPROVAL_SEARCH_FORM = 'orderApprovalSearchForm';
+const OrderAction = [
+  {
+    id: 1,
+    name: 'Approved'
+  },
+  {
+    id: 2,
+    name: 'Rejected'
+  }
+];
+const KEYEXPR = 'id';
+var orderActionBtn;
+var formInstance;
+var formInstance2;
+
+function loadForm() {
+  const formData = {};
+  $(`#${APPROVAL_SEARCH_FORM}`)
+    .dxForm({
+      formData,
+      showColonAfterLabel: false,
+      // colCount:7,
+      labelMode: 'floating',
+      onInitialized: function (e) {
+        formInstance = e.component;
+      },
+      onContentReady: (e) => {
+        let stateIdEditor = e.component.getEditor('state_id');
+        stateIdEditor.option('value', 2);
+      },
+      onFieldDataChanged: (e) => {
+        let component = e.component;
+        if (e.dataField === 'state_id') {
+          let editor = component.getEditor('district_id');
+          dxAreaHelper.getDistirct(e.value, editor);
+        }
+        if (e.dataField === 'district_id') {
+          let editor = component.getEditor('dealer_id');
+          let accountFilterParams = {
+            requested_account_type: 39,
+            product_id: 1,
+            parent_account_id: null,
+            account_status: '5,7',
+            district_id: e.value
+          };
+          dxAreaHelper.getAccount(accountFilterParams, editor);
+        }
+      },
+      items: [
+        {
+          itemType: 'group',
+          colCount: 5,
+          items: [
+            {
+              dataField: 'state_id',
+              editorType: 'dxSelectBox',
+              editorOptions: {
+                items: ACCESS_STATES,
+                searchEnabled: true,
+                showClearButton: true,
+                displayExpr: 'state_name',
+                valueExpr: 'state_id'
+              },
+              validationRules: [
+                {
+                  type: 'required',
+                  message: 'State is required'
+                }
+              ],
+              label: {
+                text: 'State'
+              }
+            },
+            {
+              dataField: 'district_id',
+              editorType: 'dxSelectBox',
+              editorOptions: {
+                items: [],
+                searchEnabled: true,
+                showClearButton: true,
+                displayExpr: 'district_name',
+                valueExpr: 'district_id'
+              },
+              // validationRules: [
+              //   // {
+              //   //   type: 'required',
+              //   //   message: 'District is required'
+              //   // }
+              // ],
+              label: {
+                text: 'District'
+              }
+            },
+            {
+              colSpan: 1,
+              dataField: 'dealer_id',
+              editorType: 'dxSelectBox',
+              editorOptions: {
+                // width:200,
+                items: [],
+                searchEnabled: true,
+                valueExpr: 'account_id',
+                displayExpr: (item) => {
+                  if (item) {
+                    return `${item.name} (${item.sap_code})`;
+                  }
+                },
+                showClearButton: true
+              },
+              validationRules: [],
+              label: {
+                text: 'Dealer'
+              }
+            },
+            {
+              dataField: 'status',
+              editorType: 'dxSelectBox',
+              editorOptions: {
+                items: [],
+                searchEnabled: true,
+                valueExpr: 'id',
+                displayExpr: (item) => {
+                  if (item) {
+                    return `${item.name}`;
+                  }
+                },
+                showClearButton: true
+              },
+              validationRules: [],
+              label: {
+                text: 'Order status'
+              }
+            },
+            {
+              colSpan: 1,
+              dataField: 'requisition_date',
+              editorType: 'dxDateBox',
+              width: 240,
+              editorOptions: {
+                width: 240,
+                type: 'date',
+                pickerType: 'calendar',
+                formatString: 'd/M/y',
+                displayFormat: 'd/M/y',
+                value: null,
+                inputAttr: { 'aria-label': 'Disabled' }
+              },
+              validationRules: [],
+              label: {
+                text: 'Order date'
+              }
+            },
+            {
+              cssClass: 'text-right',
+              colSpan: 5,
+              template: (data, itemElement) => {
+                let searchButton = renderSearchButton('orderApprovalSearchForm', loadOrders, itemElement);
+                let resetButton = renderFormResetButton('resetButton', $(`#form`).dxForm('instance'), 'orderApprovalSearchForm');
+                let exportButton = renderGridExportButton({
+                  id: 'exportButton',
+                  grid_id: '#orderApprovalDataGrid',
+                  file_name: 'requisition_history.xlsx',
+                  can_export: CAN_EXPORT,
+                  has_custom_action: false,
+                  sheet_name: 'requisition_history',
+                  export_hidden_columns: false
+                });
+
+                itemElement.append([searchButton, resetButton, exportButton]);
+              }
+            }
+          ]
+        }
+      ]
+    })
+    .dxForm('instance');
+}
+
+function loadOrders(payload = {}, loadType = false, buttonComponent) {
+  var dataSource = new DevExpress.data.CustomStore({
+    key: KEYEXPR,
+    load: function (loadOptions) {
+      var deferred = $.Deferred(),
+        args = {};
+      [].forEach(function (i) {
+        if (i in loadOptions && this.isNotEmpty(loadOptions[i])) args[i] = JSON.stringify(loadOptions[i]);
+      });
+      if (payload?.requisition_date) {
+        payload.requisition_date = moment(payload.requisition_date).format('YYYY-MM-DD');
+      }
+
+      $.ajax({
+        url: route('webapi.order.ho.order_credit_analysis_list'),
+        method: 'GET',
+        dataType: 'json',
+        data: payload,
+        success(result) {
+          deferred.resolve(result.data, {
+            totalCount: result.totalCount
+          });
+          $('.totalPendingOrders').text(result.totalCount);
+          let totalPendingQty = result.data.reduce((acc, current) => {
+            return acc + parseFloat(current.order_approved_quantity);
+          }, 0);
+          $('.totalPendingQuantity').text(totalPendingQty.toFixed(3));
+
+          changeButtonStateAndText(buttonComponent, false);
+        },
+        error: function () {
+          deferred.reject('Data Loading Error');
+          changeButtonStateAndText(buttonComponent, false);
+        }
+      });
+      return deferred.promise();
+    },
+    remove: (key) => {
+      var store = $(`#${APPROVAL_DATA_GRID}`).dxDataGrid('instance').getDataSource().store();
+      store.push([{ type: 'remove', key: key }]);
+    }
+  });
+
+  $(() => {
+    $(`#${APPROVAL_DATA_GRID}`).dxDataGrid({
+      dataSource,
+      repaintChangesOnly: true,
+      remoteOperations: true,
+      showBorders: true,
+      showRowLines: true,
+      allowColumnReordering: false,
+      allowColumnResizing: false,
+      allowUpdating: true,
+      columnAutoWidth: true,
+      showBorders: true,
+      rowAlternationEnabled: true,
+      wordWrapEnabled: true,
+      sorting: 'none',
+      hoverStateEnabled: true,
+      selection: {
+        mode: 'none'
+      },
+      columnFixing: {
+        enabled: true
+      },
+      scrolling: {
+        //rowRenderingMode: 'virtual',
+        mode: 'virtual',
+        scrollByContent: true
+      },
+      paging: {
+        pageSize: 25
+      },
+      pager: {
+        visible: true,
+        allowedPageSizes: [25, 50],
+        showPageSizeSelector: true,
+        showInfo: true,
+        showNavigationButtons: true
+      },
+      columnChooser: {
+        enabled: true,
+        mode: 'select',
+        position: {
+          my: 'right top',
+          at: 'right bottom',
+          of: '.dx-datagrid-column-chooser-button'
+        }
+      },
+
+      ...LOAD_PANEL_DX,
+      onToolbarPreparing: (e) => {
+        var html = $('<div class="mt-1">').html(`
+          <div class="d-flex">
+          <div class="col-md-12 d-flex">
+               <div class="col-md-6">
+                 <span class="font-weight-bold">Total Pending Orders</span>
+                 <h4 class="font-weight-bold totalPendingOrders text-danger">0</h4>
+               </div>
+               <div class="col-md-8">
+                 <span class="font-weight-bold">Total Pending Qty (MT)</span>
+                 <h4 class="font-weight-bold totalPendingQuantity text-success">0.00</h4>
+               </div>
+             </div>
+         </div>
+   `);
+        e.toolbarOptions.items.unshift({
+          location: 'before',
+          template() {
+            return $('<div>').html(html);
+          }
+        });
+      },
+      columns: [
+        {
+          dataField: 'distributor_name',
+          caption: 'Distributor',
+          visible: true
+        },
+        {
+          dataField: 'dealer_sap_code',
+          caption: 'Dealer SAP Code'
+        },
+        {
+          dataField: 'district_name',
+          caption: 'District'
+        },
+        {
+          dataField: 'dealer_name',
+          caption: 'Dealer Name'
+        },
+        {
+          dataField: 'order_code',
+          caption: 'Order Code'
+        },
+        {
+          dataField: 'order_approved_quantity',
+          caption: 'Order Qty (MT)'
+        },
+        {
+          dataField: '',
+          caption: 'Order value'
+        },
+        {
+          dataField: '',
+          caption: 'After Material OS reached'
+        },
+        {
+          dataField: 'credit_limit',
+          caption: 'Credit Limit (₹)'
+        },
+        {
+          dataField: 'sd_balance_9',
+          caption: 'SD @9% (₹)'
+        },
+        {
+          dataField: 'sd_balance_14',
+          caption: 'SD @14% (₹)'
+        },
+        {
+          dataField: 'credit_days',
+          caption: 'Credit Days'
+        },
+        {
+          dataField: 'net_amount',
+          caption: 'Net O/S (₹)'
+        },
+        {
+          dataField: 'day0_30',
+          caption: '0 to 30 days (₹)'
+        },
+        {
+          dataField: 'day31_45',
+          caption: '31 to 45 days (₹)'
+        },
+        {
+          dataField: 'day46_60',
+          caption: '46 to 60 days (₹)'
+        },
+        {
+          dataField: 'day61_75',
+          caption: '61 to 75 days (₹)'
+        },
+        {
+          dataField: 'day76_90',
+          caption: '76 to 90 days (₹)'
+        },
+        {
+          dataField: 'day91_120',
+          caption: '91 to 120 days (₹)'
+        },
+        {
+          dataField: 'days121_180',
+          caption: '121 to 180 days (₹)'
+        },
+        {
+          dataField: 'days181_above',
+          caption: 'Above 180 days (₹)'
+        },
+        {
+          dataField: 'os_greater_than_60_days',
+          caption: 'Total OS>60 (₹)'
+        },
+        {
+          dataField: 'latest_inv_date',
+          caption: 'Last Inv Date '
+        },
+        {
+          dataField: 'latest_inv_quantity',
+          caption: 'Last Inv. Qty (MT)'
+        },
+        {
+          dataField: 'latest_inv_value',
+          caption: 'Last Inv. Value (₹)'
+        },
+        {
+          dataField: '',
+          caption: 'Collection from Last Inv'
+        },
+        {
+          dataField: 'lastest_payment_amount',
+          caption: 'Last payment amount (₹)'
+        },
+        {
+          dataField: '',
+          caption: 'Earlier Commitment'
+        },
+        {
+          dataField: 'last_ocp_amount',
+          caption: 'Latest commitment'
+        },
+        {
+          dataField: 'lifting_quantity_for_pfy',
+          caption: 'Lifting 23-24 (MT)'
+        },
+        {
+          dataField: 'lifting_quantity_for_cfy',
+          caption: 'Lifting 24-25 (MT)'
+        },
+        {
+          dataField: '',
+          caption: 'Action',
+          visible: true,
+          width: 130,
+          fixed: true,
+          fixedPosition: 'right',
+          alignment: 'center',
+          cellTemplate: function (container, options) {
+            container.empty();
+            let data = options.data;
+
+            const tickIcon = $('<span class="mt-1" title="Approve order">')
+              .addClass('dx-icon-check icon-button')
+              .css({ cursor: 'pointer', marginRight: '10px', padding: '5px', borderRadius: '50%', color: 'white', backgroundColor: 'green', borderColor: 'green' })
+              .on('click', function () {
+                loadPopup(data, 'approve');
+              });
+
+            const crossIcon = $('<span title="Reject order">')
+              .addClass('dx-icon-clear icon-button')
+              .css({ marginRight: '10px', padding: '5px', borderRadius: '50%', color: 'white', backgroundColor: 'red', borderColor: 'red', cursor: 'pointer' })
+              .on('click', function () {
+                loadPopup(data, 'reject');
+              });
+
+            container.append(tickIcon).append(crossIcon);
+
+            if (IS_SECOND_LEVEL_APPROVAL_REQUIRED == 'true') {
+              const secondLevelApprovalIcon = $(`<span data-toggle="tooltip" data-placement="top"
+                                title="Second level approval">`)
+                .addClass('dx-icon-chevrondoubleright icon-button')
+                .css({ marginRight: '10px', padding: '5px', borderRadius: '50%', color: 'white', backgroundColor: 'orange', borderColor: 'orange', cursor: 'pointer' })
+                .on('click', function () {
+                  loadPopup(data, 'higher level approval');
+                });
+              container.append(secondLevelApprovalIcon);
+            }
+          }
+        }
+      ]
+    });
+  });
+
+  function loadPopup(data, approvalStatus) {
+    console.log('data', data.order_approved_quantity);
+    $('#quantityApprovalPopup')
+      .dxPopup({
+        contentTemplate: (contentElement) => {
+          var formContainer = $('<div class="m-6">');
+          formContainer
+            .dxForm({
+              formData: {},
+              onInitialized: function (e) {
+                formInstance2 = e.component;
+              },
+              onContentReady: (e) => {},
+              onFieldDataChanged: (e) => {},
+              items: [
+                {
+                  itemType: 'group',
+                  colCount: 1,
+                  items: [
+                    {
+                      dataField: 'final_quantity',
+                      lable: { text: 'Approve Quantity' },
+                      editorType: 'dxNumberBox',
+                      editorOptions: {
+                        min: 1,
+                        showSpinButtons: true,
+                        readOnly: ['approve', 'higher level approval'].includes(approvalStatus) ? false : true,
+                        onKeyDown: function (e) {
+                          if (e.event) {
+                            e = e.event;
+                          }
+                          validateInputs(e, 'positivenumbers');
+                        }
+                      },
+                      validationRules:
+                        approvalStatus === 'reject'
+                          ? []
+                          : [
+                              {
+                                type: 'required',
+                                message: 'Quantity is required'
+                              },
+                              {
+                                type: 'pattern',
+                                pattern: /^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/,
+                                message: 'Quantity must be positive value'
+                              }
+                            ]
+                    },
+                    {
+                      dataField: 'remarks',
+                      lable: { text: 'Remarks' },
+                      editorType: 'dxTextArea',
+                      validationRules:
+                        approvalStatus === 'approve'
+                          ? []
+                          : [
+                              {
+                                type: 'required',
+                                message: 'remarks is required'
+                              }
+                            ]
+                    }
+                  ]
+                },
+                {
+                  itemType: 'button',
+                  colSpan: 2,
+                  horizontalAlignment: 'right',
+                  useSubmitBehavior: true,
+                  buttonOptions: {
+                    text: 'Save Changes',
+                    elementAttr: {
+                      class: 'btn dx-success-button'
+                    },
+                    onClick: function (e) {
+                      let formData = formInstance2.option('formData');
+                      console.log('formData', formData);
+                      console.log('formData.final_quantity', formData.final_quantity);
+                      console.log('data.requested_quantity', data.requested_quantity);
+                      console.log('data.order_approved_quantity', data.order_approved_quantity);
+                      var result = formInstance2 && formInstance2.validate();
+                      if (result && result.isValid) {
+                        if (data.requested_quantity < formData.final_quantity) {
+                          toastr.error('Approved quantity must be lower or same as requested quantity');
+                          return;
+                        }
+                        let URL = route('webapi.order.ho.update_quantity');
+                        payload = {
+                          id: data.id,
+                          final_quantity: formData.final_quantity,
+                          // final_quantity:data.order_approved_quantity,
+                          remarks: formData.remarks,
+                          action: approvalStatus
+                        };
+                        axios
+                          .post(URL, payload)
+                          .then((response) => {
+                            var result = response.data;
+                            toastr.success('Quantity was updated Sucessfully.');
+                            loadOrders();
+                          })
+                          .catch((error) => {
+                            toastr.error('Something went wrong.');
+                            $(`#${APPROVAL_DATA_GRID}`).dxDataGrid('instance').refresh();
+                          });
+                        $('#quantityApprovalPopup').dxPopup('instance').hide();
+                      }
+                    }
+                  }
+                }
+              ]
+            })
+            .dxForm('instance');
+
+          contentElement.append(formContainer);
+        },
+        wrapperAttr: {
+          //id: 'devexpress_popup'
+        },
+        width: 600,
+        height: 250,
+        shading: true,
+        //container: '#gridContainer',
+        showTitle: true,
+        title: `${approvalStatus.toUpperCase()} | Requested qty: ${parseFloat(data.requested_quantity).toFixed(2)} MT`,
+        visible: false,
+        dragEnabled: false,
+        hideOnOutsideClick: false,
+        showCloseButton: true,
+        position: {
+          my: 'center',
+          collision: 'fit'
+        }
+      })
+      .dxPopup('instance')
+      .show();
+  }
+}
+
+/**
+ * Initial Load
+ */
+loadForm();
+loadOrders();
