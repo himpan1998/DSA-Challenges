@@ -1,3 +1,7 @@
+onContentReady: (e) => {
+  let stateIdEditor = e.component.getEditor('state_id');
+  stateIdEditor.option('value', 2);
+},
 onFieldDataChanged: (e) => {
   let component = e.component;
   if (e.dataField === "state_id") {
