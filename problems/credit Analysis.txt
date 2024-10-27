@@ -1,1021 +1,135 @@
-const KEYEXPR = 'id';
-var rows = [];
-const REQUISITION_HISTORY_SEARCH_FORM_IDENTIFIER = '#search-form';
-const SHIP_TO_POPUP_FORM_IDENTIFIER = '#ship-to-popup-form';
-const SHIP_TO_INFO_POPUP_IDENTIFIER = '#ship_to_info_popup';
-
-const formData = {};
-$(REQUISITION_HISTORY_SEARCH_FORM_IDENTIFIER)
-  .dxForm({
-    formData,
-    showColonAfterLabel: false,
-    labelMode: 'floating',
-    onContentReady: (e) => {},
-    onFieldDataChanged: (e) => {
-      let component = e.component;
-      if (e.dataField === 'state_id') {
-        e.component.updateData('district_id', null);
-        let editor = component.getEditor('district_id');
-        dxAreaHelper.getDistirct(e.value, editor);
-      }
-    },
-    items: [
-      {
-        itemType: 'group',
-        colCount: 4,
-        items: [
-          {
-            dataField: 'delivery_date',
-            editorType: 'dxDateBox',
-            useMaskBehavior: true,
-            disabled: false,
-            editorOptions: {
-              type: 'date',
-              pickerType: 'calendar',
-              displayFormat: 'dd-MM-yyyy',
-              dateSerializationFormat: 'yyyy-MM-dd',
-              value: null,
-              inputAttr: { 'aria-label': 'Disabled' }
-            },
-            validationRules: [
-              {
-                type: 'required',
-                message: 'Dispatch date is requried'
-              }
-            ]
-          },
-          {
-            dataField: 'plant_name',
-            editorType: 'dxSelectBox',
-            editorOptions: {
-              searchEnabled: true,
-              showClearButton: true,
-              showSelectionControls: true,
-              // maxDisplayedTags: 1,
-              items: plant_source,
-              valueExpr: 'name',
-              displayExpr: 'name'
-            },
-            validationRules: [
-              {
-                type: 'required',
-                message: 'Plant Name  is required'
-              }
-            ],
-            label: {
-              text: 'Plant name'
-            }
-          },
-          // {
-          //   dataField: 'state_id',
-          //   editorType: 'dxSelectBox',
-          //   editorOptions: {
-          //     items: states,
-          //     searchEnabled: true,
-          //     showClearButton: true,
-          //     displayExpr: 'state_name',
-          //     valueExpr: 'state_id'
-          //   },
-          //   validationRules: [
-          //     //   {
-          //     //     type: 'required',
-          //     //     message: 'State is required'
-          //     //   }
-          //   ],
-          //   label: {
-          //     text: 'Select State'
-          //   }
-          // },
-          // {
-          //   dataField: 'district_id',
-          //   editorType: 'dxSelectBox',
-          //   editorOptions: {
-          //     items: [],
-          //     searchEnabled: true,
-          //     showClearButton: true,
-          //     displayExpr: 'district_name',
-          //     valueExpr: 'district_id'
-          //   },
-          //   validationRules: [
-          //     //   {
-          //     //     type: 'required',
-          //     //     message: 'District is required'
-          //     //   }
-          //   ],
-          //   label: {
-          //     text: 'Select District'
-          //   }
-          // },
-          {
-            cssClass: 'text-left',
-            colSpan: 2,
-            template: (data, itemElement) => {
-              $('<div class="m-1">')
-                .dxButton({
-                  text: 'Search',
-                  type: 'success',
-                  elementAttr: {
-                    class: 'btn dx-success-button'
-                  },
-                  useSubmitBehavior: true,
-                  onClick(e) {
-                    var form = $('#search-form').dxForm('instance');
-                    if (form.validate().isValid) {
-                      var formData = form.option().formData;
-                      loadSummaryReport(formData);
-                    }
-                  }
-                })
-                .appendTo(itemElement);
-              $(`<div id="clearButton" class="m-1">`)
-                .dxButton({
-                  stylingMode: 'contained',
-                  text: 'Reset',
-                  type: 'danger',
-                  width: 90,
-                  height: 37,
-                  elementAttr: {
-                    class: 'btn dx-error-button'
-                  },
-                  onClick(e) {
-                    var form = $(REQUISITION_HISTORY_SEARCH_FORM_IDENTIFIER).dxForm('instance');
-                    form.resetValues();
-                  }
-                })
-                .appendTo(itemElement);
-              $('<div class="m-1 text-right">')
-                .dxButton({
-                  text: 'Export',
-                  type: 'info',
-                  visible: IS_SUPER_ADMIN ? true : CAN_EXPORT,
-                  icon: 'exportxlsx',
-                  stylingMode: 'outlined',
-                  elementAttr: {
-                    class: 'btn'
-                  },
-                  useSubmitBehavior: true,
-                  onClick(e) {
-                    var form = $('#search-form').dxForm('instance');
-                    if (form.validate().isValid) {
-                      var formData = form.option().formData;
-                      exportSummaryReport(formData);
-                    }
-                  }
-                })
-                .appendTo(itemElement);
-              // $('<div class="m-1 text-right">')
-              //   .dxButton({
-              //     text: 'Contracts',
-              //     type: 'info',
-              //     icon: 'refresh',
-              //     useSubmitBehavior: true,
-              //     onClick(e) {
-              //       var form = $('#search-form').dxForm('instance');
-              //       if (form.validate().isValid) {
-              //         var formData = form.option().formData;
-              //         syncContracts(formData);
-              //       }
-              //     }
-              //   })
-              //   .appendTo(itemElement);
-            }
-          }
-        ]
-      }
-    ]
-  })
-  .dxForm('instance');
-
-function loadGallary(index = 0, gallerySources = []) {
-  $(`#product_gallery_${index}`).dxGallery({
-    dataSource: gallerySources,
-    height: 100,
-    width: '100%',
-    initialItemWidth: 200,
-    loop: true,
-    showNavButtons: true,
-    showIndicator: false,
-    itemTemplate(item) {
-      let result = $('<div>').addClass('col-lg-12');
-      $(`<span>`).addClass('product-name-text').text(item.name).appendTo(result);
-      $(`<br>`).appendTo(result);
-      $('<span>').addClass('product-quantity-text').text(item.quantity).appendTo(result);
-      return result;
-    }
-  });
-}
-
-$('#da-creation-summary-panel').dxTabPanel({
-  loop: true,
-  animationEnabled: true,
-  swipeEnabled: true,
-  elementAttr: {
-    class: 'dxTabPanelCustomDiv'
-  },
-  onContentReady: function () {},
-  onTitleClick: function (options) {
-    let getContents = JSON.parse(localStorage.getItem('tab_content') || '[]');
-    let itemIndex = options.itemIndex;
-    let id = options.itemData?.id;
-    if (itemIndex === 0) {
-      loadGallary(0, getContents.all_products);
-    } else {
-      let filteredData = getContents.category_wise?.filter((e) => e.category === id) || [];
-      if (filteredData.length) {
-        loadGallary(itemIndex, filteredData[0]?.products);
-      } else {
-        notify('Something went wrong', 'error');
-      }
-    }
-  },
-  items: []
-});
-
-/**
- * Initial Load
- */
-//webapi.order.ho.summary-report
-/**
- * Export summary report
- * @param {object} filterParams
- */
-function exportSummaryReport(filterParams = {}) {
-  let URL = route('webapi.order.ho.export-summary-report', {
-    state_id: filterParams.state_id ? filterParams.state_id : 0,
-    district_id: filterParams.district_id ? filterParams.district_id : 0,
-    plant_name: filterParams.plant_name ? filterParams.plant_name : 'NULL',
-    delivery_date: filterParams.delivery_date ? filterParams.delivery_date : 'NULL'
-  });
-  $('#loader').removeClass('d-none');
-  axios
-    .get(URL, {
-      responseType: 'blob'
-    })
-    .then((response) => {
-      var blob = new Blob([response?.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-      var link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      let filename = 'order_report';
-      link.download = filename + '.xlsx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      $('#loader').addClass('d-none');
-    })
-    .catch((error) => {
-      console.log('error-in-export', error);
-      $('#loader').addClass('d-none');
-      notify('Something went wrong', 'error');
-    });
-}
-
-function loadSummaryReport(filterParams = {}) {
-  let params = {
-    state_id: filterParams.state_id ? filterParams.state_id : 0,
-    district_id: filterParams.district_id ? filterParams.district_id : 0,
-    plant_name: filterParams.plant_name ? filterParams.plant_name : 'NULL',
-    delivery_date: filterParams.delivery_date ? filterParams.delivery_date : 'NULL'
+$(function () {
+  // Form data to hold the Ship To and other details
+  let formData = {
+    shipTo: "",
+    address: "",
+    name: "",
+    mobileNumber: "",
   };
 
-  let URL = route('webapi.order.ho.summary-report', params);
-  $('#loader').removeClass('d-none');
-  axios
-    .get(URL)
-    .then((response) => {
-      var result = response.data?.data;
-      if (result) {
-        var total = result?.total;
-        prepareTabContent(result, total);
-
-        var master = result?.master_data;
-        if (master) {
-          prepareMasterGrid(master);
-        }
-      } else {
-        notify('No record found', 'error');
-      }
-      $('#loader').addClass('d-none');
-    })
-    .catch((error) => {
-      toastr.error(error?.response?.data?.message);
-      $('#loader').addClass('d-none');
-    });
-}
-const contractPopUpTemplate = function () {
-  return $('<div/>').append(`<div id="da-creation-popup"></div>`);
-};
-
-function prepareMasterGrid(master) {
-  let markup = ``;
-
-  master.map((eachRow, index) => {
-    let keyValues = [
+  // Initialize DevExtreme form with Ship To field and Edit button
+  $("#formContainer").dxForm({
+    formData: formData,
+    items: [
       {
-        key: 'District',
-        value: eachRow.order[0]['requisition']?.district.district_name
-      },
-      {
-        key: 'LP number',
-        value: eachRow.batch_id
-      },
-      {
-        key: 'Total qty alloted (MT)',
-        value: eachRow.approved_quantity
-      },
-      {
-        key: 'Truck number',
-        value: eachRow.registration_no
-      },
-      {
-        key: 'Driver / Transporter name',
-        value: eachRow.driver_name
-      },
-      {
-        key: 'Mobile number',
-        value: eachRow.driver_contact_number
-      }
-    ];
-    let KEY = `dx_grid_${index}`;
-    markup += `<div class="contract-master-card">
-    <div class="contract-card-header">
-      <div class="row contract-card-content">`;
-
-    keyValues.map((e) => {
-      markup += `<div class="col-lg-2">
-      <span class="contract-card-title">
-        ${e.key}
-      </span><br />
-      <label class="contract-card-value">
-        ${e.value}
-      </label>
-    </div>`;
-    });
-    markup += `</div>
-          </div>
-          <div class="row contract-card-body">
-            <div class="col-lg-12">
-              <div id="${KEY}"></div>
-            </div>
-          </div>
-        </div>`;
-  });
-
-  $('#da-creation-master-grid').html(markup);
-
-  master.map((eachRow, index) => {
-    let data = eachRow.order;
-    const plantCode = plant_source.filter((e) => e.name === eachRow.plant_name)[0]?.code || 0;
-    if (!plantCode) {
-      toastr.error('Plant code not found');
-      return;
-    }
-
-    console.log('plantCode', plantCode);
-
-    let KEY = `dx_grid_${index}`;
-    $(`#${KEY}`).dxDataGrid({
-      dataSource: data,
-      keyExpr: 'id',
-      rowDragging: {
-        dragDirection: 'both',
-        dropFeedbackMode: 'push',
-        allowReordering: true,
-        onReorder(e) {
-          const fromIndex = e.fromIndex;
-          const toIndex = e.toIndex;
-          const [movedItem] = data.splice(fromIndex, 1);
-          data.splice(toIndex, 0, movedItem);
-          data.forEach((item, index) => {
-            item.route_sequence = index + 1;
-          });
-          let fromData = data[fromIndex];
-          let toData = data[toIndex];
-          toData = {
-            id: toData.id,
-            route_sequence: toData.route_sequence
-          };
-          //   toData =  {
-          //       id: toData.id,
-          //       route_sequence:toData.route_sequence
-          //   }
-
-          updateRouteSequence({
-            fromData,
-            toData
-          });
-          e.component.refresh();
-        }
-      },
-      columns: [
-        {
-          dataField: 'route_sequence',
-          caption: 'Loading order',
-          alignment: 'left'
-        },
-        {
-          dataField: 'Sold to',
-          caption: 'Sold to',
-          cellTemplate: (container, options) => {
-            let data = options.data;
-            let dealerName = data?.requisition?.dealer?.name + ' (' + data?.requisition?.dealer?.sap_code + ')';
-            container.text(dealerName);
-          }
-        },
-        // {
-        //   dataField: 'consignee',
-        //   caption: 'Consignee'
-        // },
-        {
-          dataField: 'final_quantity',
-          caption: 'Approved Quantity (MT)',
-          cellTemplate: (container, options) => {
-            let data = options?.data;
-            let approvedQuantity = data?.approved_quantity;
-            container.text(approvedQuantity);
-          }
-        },
-        {
-          dataField: 'requisition.order_code',
-          caption: 'Order Code'
-        },
-        {
-          dataField: 'da',
-          caption: 'DA number',
-          cellTemplate: (container, options) => {
-            const contractNumbers = options.data?.contracts?.map((e) => e.da_no).join(', ');
-            var data = options.data;
-            let productsArray = [];
-            for (let i = 0; i < options.data?.products?.length; i++) {
-              let e = options.data.products[i];
-              productsArray.push({
-                code: e.product.code,
-                quantity: e.approved_quantity,
-                name: e.product.name
-              });
-            }
-            if (!contractNumbers) {
-              $(`<a class="badge contract-create-button">Create&nbsp;&nbsp;<i class='fa fa-plus-circle'></i></a>`)
-                .addClass('dx-link')
-                .on('click', function () {
-                  $('#create-da-popup').dxPopup({
-                    contentTemplate: function (contentElement) {
-                      var formContainer = $('<div class="m-3">');
-
-                      console.log('data111', data);
-                      let formData = {
-                        dealer_name: data?.requisition?.dealer?.name,
-                        order_id: data?.id,
-                        loading_id: data?.loading_id,
-                        order_code: data?.requisition?.order_code,
-                        sap_code: data?.requisition?.sap_code,
-                        ship_code: '302120',
-                        order_date: data?.requisition?.created_at,
-                        plant_name: plantCode
-                      };
-                      formContainer
-                        .dxForm({
-                          labelMode: 'floating',
-                          formData: formData,
-                          colCount: 4,
-                          onInitialized: function (e) {
-                            formInstance = e.component;
-                          },
-                          onContentReady: function (e) {},
-                          onFieldDataChanged: function (e) {},
-                          items: [
-                            {
-                              dataField: 'dealer_name',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                readOnly: true
-                              },
-                              label: {
-                                // text: 'Dealer Name'
-                                text: 'Sold To'
-                              }
-                            },
-                            {
-                              dataField: 'ship_to',
-                              editorType: 'dxTextBox',
-                              colSpan: 4,
-                              editorOptions: {
-                                readOnly: false,
-                                onValueChanged: function (e) {
-                                  if (e.value.length === 6 && e.value.match(/^[0-9]+$/)) {
-                                    // formData.ship_code=e.value;
-                                    fetchShipToData(e.value);
-                                  } else if (e.value.length > 0) {
-                                    toastr.error('Please enter a valid 6 digit number');
-                                  }
-                                }
-                              },
-                              label: {
-                                // text: 'Dealer Name'
-                                text: 'Ship To'
-                              }
-                            },
-                            $('<div>').dxButton({
-                              icon: 'edit',
-                              text: 'Edit'
-                            }),
-                            {
-                              dataField: 'order_id',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                readOnly: true
-                              },
-                              label: {
-                                text: 'Order Id'
-                              }
-                            },
-                            {
-                              dataField: 'order_code',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                readOnly: true
-                              },
-                              label: {
-                                text: 'Order Code'
-                              }
-                            },
-                            {
-                              dataField: 'order_date',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                readOnly: true
-                              },
-                              label: {
-                                text: 'Order Date'
-                              }
-                            },
-                            {
-                              dataField: 'sap_code',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                readOnly: true
-                              },
-                              label: {
-                                text: 'Sap Code'
-                              }
-                            },
-                            {
-                              dataField: 'contract_type',
-                              editorType: 'dxTextBox',
-                              colSpan: 2,
-                              editorOptions: {
-                                value: 'ZLCQ',
-                                readOnly: true
-                              },
-                              label: {
-                                text: 'Contract Type'
-                              }
-                            },
-                            {
-                              dataField: 'sales_org',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: [
-                                  {
-                                    text: 'SSIL (1003)',
-                                    value: 1003
-                                  },
-                                  {
-                                    text: 'SSML (5503)',
-                                    value: 5503
-                                  }
-                                ],
-                                valueExpr: 'value',
-                                displayExpr: 'text'
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Sales Org'
-                              },
-                              validationRules: [
-                                {
-                                  type: 'required',
-                                  message: 'Sales org is required'
-                                }
-                              ]
-                            },
-                            {
-                              dataField: 'contract_start_date',
-                              editorType: 'dxDateBox',
-                              editorOptions: {
-                                value: new Date(),
-                                displayFormat: 'dd-MM-yyyy',
-                                dateSerializationFormat: 'yyyy-MM-dd',
-                                readOnly: true
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Contract Start Date'
-                              }
-                            },
-                            {
-                              dataField: 'contract_end_date',
-                              editorType: 'dxDateBox',
-                              editorOptions: {
-                                value: new Date(new Date().setDate(new Date().getDate() + 10)),
-                                displayFormat: 'dd-MM-yyyy',
-                                dateSerializationFormat: 'yyyy-MM-dd',
-                                readOnly: true
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Contract End Date'
-                              }
-                            },
-                            {
-                              dataField: 'incoterm',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: incoterm,
-                                valueExpr: 'name',
-                                displayExpr: (item) => {
-                                  if (item) {
-                                    return `${item.name} - ${item.description}`;
-                                  }
-                                }
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Inco Term'
-                              },
-                              validationRules: [
-                                {
-                                  type: 'required',
-                                  message: 'INCOTERM is required'
-                                }
-                              ]
-                            },
-                            {
-                              dataField: 'order_reason',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: order_reason,
-                                valueExpr: 'id',
-                                displayExpr: (item) => {
-                                  if (item) {
-                                    return `${item.id} - ${item.name}`;
-                                  }
-                                }
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Order Reason'
-                              },
-                              validationRules: [
-                                // {
-                                //   type: 'required',
-                                //   message: 'Order Reasonis required'
-                                // }
-                              ]
-                            },
-                            {
-                              dataField: 'special_processing_indicator',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: special_processing_indicator,
-                                valueExpr: 'id',
-                                // displayExpr: 'name'
-                                displayExpr: (item) => {
-                                  if (item) {
-                                    return `${item.id} - ${item.name}`;
-                                  }
-                                }
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Special Processing Indicator'
-                              },
-                              validationRules: [
-                                // {
-                                //   type: 'required',
-                                //   message: 'Order Reasonis required'
-                                // }
-                              ]
-                            },
-                            {
-                              dataField: 'shipment_condition',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: shipment_condition,
-                                valueExpr: 'id',
-                                // displayExpr: 'name'
-                                displayExpr: (item) => {
-                                  if (item) {
-                                    return `${item.id} - ${item.name}`;
-                                  }
-                                }
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Shipment Condition'
-                              },
-                              validationRules: [
-                                // {
-                                //   type: 'required',
-                                //   message: 'Order Reasonis required'
-                                // }
-                              ]
-                            },
-                            {
-                              dataField: 'plant_name',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: plant_source,
-                                valueExpr: 'code',
-                                displayExpr: 'name',
-                                readOnly: true
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Plant'
-                              }
-                              // validationRules: [
-                              //   {
-                              //     type: 'required',
-                              //     message: 'Plant name is required'
-                              //   }
-                              // ]
-                            },
-
-                            {
-                              dataField: 'shipping_type',
-                              editorType: 'dxSelectBox',
-                              editorOptions: {
-                                items: shipping_type,
-                                valueExpr: 'id',
-                                displayExpr: (item) => {
-                                  if (item) {
-                                    return `${item.id} - ${item.name}`;
-                                  }
-                                }
-                              },
-                              colSpan: 2,
-                              label: {
-                                text: 'Shipping Type'
-                              },
-                              validationRules: [
-                                {
-                                  type: 'required',
-                                  message: 'Shipping type is required'
-                                }
-                              ]
-                            },
-                            {
-                              itemType: 'button',
-                              colSpan: 4,
-                              horizontalAlignment: 'right',
-                              useSubmitBehavior: true,
-                              buttonOptions: {
-                                text: 'Create',
-                                type: 'success',
-                                onClick: function (e) {
-                                  var formData = formInstance.option('formData');
-                                  var result = formInstance && formInstance.validate();
-                                  if (result && result.isValid) {
-                                    var payload = {
-                                      ...formData,
-                                      //id: data.id
-                                      contract_products: productsArray
-                                    };
-                                    let URL = route('webapi.order.create_da');
-                                    $('#loader').removeClass('d-none');
-                                    axios
-                                      .post(URL, payload)
-                                      .then(function (response) {
-                                        var result = response.data;
-                                        toastr.success('Data updated sucessfully!!');
-                                        $('#create-da-popup').dxPopup('instance').hide();
-                                        $('#loader').addClass('d-none');
-                                        var form = $('#search-form').dxForm('instance');
-                                        if (form.validate().isValid) {
-                                          var formData = form.option().formData;
-                                          loadSummaryReport(formData);
-                                        }
-                                      })
-                                      .catch(function (error) {
-                                        console.log('error', error);
-                                        $('#loader').addClass('d-none');
-                                        toastr.error(error);
-                                      });
-                                  }
-                                }
-                              }
-                            }
-                          ]
-                        })
-                        .dxForm('instance');
-                      contentElement.append(formContainer);
-                    },
-                    height: '75%',
-                    fullScreen: false,
-                    showTitle: true,
-                    shading: true,
-                    title: 'Create DA',
-                    visible: CAN_APPROVE,
-                    dragEnabled: false,
-                    hideOnOutsideClick: false,
-                    showCloseButton: true,
-                    wrapperAttr: {
-                      id: 'devexpress_popup'
-                    }
-                  });
-                  $('#create-da-popup').dxPopup('instance').show();
-                })
-                .appendTo(container);
+        dataField: "shipTo",
+        label: { text: "Ship To" },
+        editorType: "dxTextBox",
+        editorOptions: {
+          onValueChanged: function (e) {
+            const shipToCode = e.value;
+            if (shipToCode.length === 6) {
+              fetchAndPopulateData(shipToCode);
             } else {
-              $(`<a>${contractNumbers}</a>`).appendTo(container);
+              DevExpress.ui.notify(
+                "Ship To code must be 6 digits.",
+                "error",
+                2000
+              );
             }
-          }
-        }
-        // {
-        //   dataField: 'da_no',
-        //   cellTemplate: (container, options) => {
-        //     const daNumber = options.data?.contracts?.map((e) => e.da_no).join(', ');
-        //     if (!daNumber) {
-        //       $(`<a>-</a>`).addClass('dx-link').appendTo(container);
-        //     } else {
-        //       $(`<a>${daNumber}</a>`).appendTo(container);
-        //     }
-        //   }
-        // }
-      ]
-    });
-  });
-}
-
-function fetchShipToData(sapCode) {
-  console.log('sap_code', sapCode);
-  axios.get(route('web.order.get_addresses_by_ship_to_sap_code', { sap_code: sapCode })).then((response) => {
-    console.log('response', response);
-    let data = response.data;
-    console.log('ShipTodata', data);
-    if (data.length > 0) {
-      initiaizeShipToPopup(data);
-    }
-  });
-}
-
-// $(document).on('click', '.ship_to_details', function () {
-//   let data = $(this).data('src');
-//   initiaizeShipToPopup([], data);
-// });
-
-// Edit ShipTo popup :
-// function shipToCodePopupForm(dataset) {
-//   $(SHIP_TO_POPUP_FORM_IDENTIFIER).dxForm({
-//     labelMode: 'floating',
-//     formData: formData,
-//     colCount: 2,
-//     onInitialized: function (e) {
-//       consigneeFormInstance = e.component;
-//     },
-//     onContentReady: function (e) {
-//       let component = e.component;
-//       let shipToNameEditor = component.getEditor('name');
-//       shipToNameEditor?.option('value', dataset?.name);
-
-//       let addressEditor = component.getEditor('address');
-//       addressEditor?.option('value', dataset?.address);
-//     },
-//     onFieldDataChanged: (e) => {
-//       let component = e.component;
-//       if (e.dataField === 'sap_code') {
-//         if (e.value.length) {
-//           $(LOADER_DIV).toggleClass('d-none');
-//           axios
-//             .get(route('web.order.get_customer_addresses_by_ship_to_sap_code'), { sap_code: e.value })
-//             .then((response) => {
-//               let result = response.data;
-//               $(LOADER_DIV).toggleClass('d-none');
-//               let shipToNameEditor = component.getEditor('name');
-//               shipToNameEditor.option('value', result?.data?.name);
-
-//               let addressEditor = component.getEditor('address');
-//               addressEditor.option('value', result?.data?.address);
-//             })
-//             .catch((e) => {
-//               console.log('error', e);
-//               console.log('SAP code not exis');
-//               $(LOADER_DIV).toggleClass('d-none');
-//             });
-//         }
-//       }
-//     }
-//   });
-// }
-
-// function initiaizeShipToPopup(accountType = [], dataset) {
-//   const shipToPopUpContentTemplate = function () {
-//     return $('<div/>').append(`<div id="${SHIP_TO_POPUP_FORM_IDENTIFIER.replace('#', '')}"></div>`);
-//   };
-
-// $(SHIP_TO_INFO_POPUP_IDENTIFIER)
-//   .dxPopup({
-//     contentTemplate: shipToPopUpContentTemplate,
-//     width: 800,
-//     height: 390,
-//     showTitle: true,
-//     title: 'Ship To information',
-//     visible: true,
-//     hideOnOutsideClick: false,
-//     showCloseButton: false,
-//     onShowing: function () {
-//       setTimeout(() => {
-//         $('.dx-popup-normal').last().addClass('d-none');
-//       }, 500);
-//     },
-//     toolbarItems: [
-//       {
-//         toolbar: 'top',
-//         location: 'after',
-//         widget: 'dxButton',
-//         options: {
-//           type: 'close',
-//           icon: 'close',
-//           onClick: function () {
-//             $(SHIP_TO_INFO_POPUP_IDENTIFIER).dxPopup('instance').hide();
-//           }
-//         }
-//       }
-//     ],
-//     position: {
-//       at: 'middle',
-//       my: 'center',
-//       collision: 'fit'
-//     }
-//   })
-//   .show();
-
-// setTimeout(() => {
-//   shipToCodePopupForm(dataset, accountType);
-// }, 100);
-// }
-
-/**
- * Prepare tab content
- * @param {*} result
- * @param {*} total
- */
-function prepareTabContent(result, total) {
-  let resultItems = [];
-  resultItems.push({
-    title: `Total (${parseFloat(total).toFixed(2)} MT)`,
-    template: () => {
-      return `<div id="product_gallery_0" class="row"></div>`;
-    },
-    id: 0
-  });
-  result.category_wise.map((e, index) => {
-    resultItems.push({
-      title: `${e.category} (${parseFloat(e.total).toFixed(2)} MT)`,
-      template: () => {
-        return `<div id="product_gallery_${index + 1}" class="row"></div>`;
+          },
+        },
+        validationRules: [
+          {
+            type: "pattern",
+            pattern: "^[0-9]{6}$",
+            message: "Ship To code must be exactly 6 digits.",
+          },
+        ],
       },
-      id: e.category
-    });
+      {
+        template: function () {
+          return $("<div>").dxButton({
+            text: "Edit",
+            onClick: function () {
+              $("#editPopup").dxPopup("instance").show();
+            },
+          });
+        },
+      },
+    ],
   });
-  $('#da-creation-summary-panel').dxTabPanel('instance').option('items', resultItems);
-  setTimeout(() => {
-    $('#da-creation-summary-panel').dxTabPanel('instance').option('selectedIndex', 0);
-    loadGallary(0, result.all_products);
-  }, 200);
-  localStorage.setItem('tab_content', JSON.stringify(result));
-}
 
-function updateRouteSequence({ fromData, toData }) {
-  const fromRouteSequence = fromData.route_sequence;
-  const toRouteSequence = toData.route_sequence;
-  const fromRouteOrderId = fromData.id;
-  const toRouteOrderId = toData.id;
-  const URL = route('webapi.order.update_route_sequence');
-  axios
-    .post(URL, {
-      from_route_sequence: fromRouteSequence,
-      from_order_id: fromRouteOrderId,
-      to_route_sequence: toRouteSequence,
-      to_order_id: toRouteOrderId
-    })
-    .then((response) => {
-      notify('Route sequence updated successfully', 'success');
-      console.log('response', response);
-    })
-    .catch((error) => {
-      console.log('error-in-route-sequence-update-api', error);
-    });
-}
+  // Initialize DevExtreme Popup for the edit form
+  $("#editPopup").dxPopup({
+    title: "Edit Ship To Details",
+    visible: false,
+    width: 400,
+    height: 400,
+    contentTemplate: function () {
+      return $("<div>").attr("id", "editFormContainer");
+    },
+    onShowing: function () {
+      $("#editFormContainer").dxForm({
+        formData: formData,
+        items: [
+          { dataField: "shipTo", label: { text: "Ship To" } },
+          { dataField: "address", label: { text: "Address" } },
+          { dataField: "name", label: { text: "Name" } },
+          { dataField: "mobileNumber", label: { text: "Mobile Number" } },
+        ],
+      });
+    },
+    toolbarItems: [
+      {
+        widget: "dxButton",
+        toolbar: "bottom",
+        location: "after",
+        options: {
+          text: "Save",
+          onClick: function () {
+            // Save data from the popup form to the main form
+            const popupFormData = $("#editFormContainer")
+              .dxForm("instance")
+              .option("formData");
+            formData = { ...popupFormData };
+            $("#formContainer").dxForm("instance").option("formData", formData);
+            $("#editPopup").dxPopup("instance").hide();
+          },
+        },
+      },
+      {
+        widget: "dxButton",
+        toolbar: "bottom",
+        location: "before",
+        options: {
+          text: "Cancel",
+          onClick: function () {
+            $("#editPopup").dxPopup("instance").hide();
+          },
+        },
+      },
+    ],
+  });
 
-/**
- * Initial call
- */
-//loadSummaryReport();
+  // Function to fetch and populate data based on Ship To code using axios
+  function fetchAndPopulateData(shipToCode) {
+    axios
+      .get(`/api/getData/${shipToCode}`) // Replace with actual API endpoint
+      .then((response) => {
+        const data = response.data;
+        if (data) {
+          formData = {
+            shipTo: data.shipTo || formData.shipTo,
+            address: data.address || "",
+            name: data.name || "",
+            mobileNumber: data.mobileNumber || "",
+          };
+          $("#editFormContainer")
+            .dxForm("instance")
+            .option("formData", formData);
+          $("#formContainer").dxForm("instance").option("formData", formData);
+        } else {
+          DevExpress.ui.notify(
+            "No data found for the provided Ship To code",
+            "error",
+            2000
+          );
+        }
+      })
+      .catch((error) => {
+        DevExpress.ui.notify("Error fetching data", "error", 2000);
+        console.error("Error fetching data:", error);
+      });
+  }
+});
