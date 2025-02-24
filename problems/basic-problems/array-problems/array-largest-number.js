@@ -1,7 +1,7 @@
 /**
  *Write a function that takes an array and return the largest numbers:
  * Input: numbers=[5,6,2,8,9]
- * output: 8
+ * output: 9
  *
  */
 

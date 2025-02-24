@@ -80,7 +80,14 @@ const {
 } = require("./problems/basic-problems/LinkedList/traversing-linked-list");
 // Execute the problems
 
-// console.log(checkEvenOdd(6));
+const { createCounter } = require("./problems/clousers");
+
+const {
+  printKeyValue,
+  deleteKey,
+} = require("./problems/basic-problems/array-problems/hasMap");
+
+// console.log(outerFunction());
 // console.log(reverseString("laugh"));
 // console.log(isStringPalindrome("Level"));
 // console.log(isStringPalindrome2("dad"));
@@ -116,4 +123,45 @@ const {
 // console.log(missingArrayElement([1, 2, 3, 5], 10));
 // console.log(countFrequencyElement([1,1,1, 2, 2,3,3,3, 5]));
 // console.log(list);
-//
+// console.log(list);
+// console.log(list);
+
+function arrayLargestNummber(numbers) {
+  let i = 0;
+  let max = 0;
+  while (i < numbers.length) {
+    if (numbers[i] > max) {
+      max = numbers[i];
+      i++;
+    }
+  }
+  return max;
+}
+console.log(
+  "--------------------------------------------------------------------------------------------------------------------------------"
+);
+// console.log(arrayLargestNummber([1, 2, 3, 19]));
+
+let nestedArray = [1, [2, [3, 4], 5], 6];
+
+function flattenArray(array) {
+  let result = [];
+  for (let i = 0; i < array.length; i++) {
+    if (Array.isArray(array[i])) {
+      result = result.concat(flattenArray(array[i]));
+    } else {
+      result.push(array[i]);
+    }
+  }
+  return result;
+}
+
+console.log(flattenArray(nestedArray));
+
+const cars = new Array("BMW", "Volvo", "Saab", "Ford", "Fiat", "Audi");
+let cars2 = cars.concat("Honda");
+console.log("cars2:", cars2);
+
+const arr = [1, 23, 4, 5, 6, 7, 8, 9, 10];
+let arr1 = arr.concat(11, 12, 13, 14, 15);
+console.log(arr1);

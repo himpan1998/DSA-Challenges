@@ -3,7 +3,7 @@
  */
 function printNumber() {
   for (let i = 1; i <= 10; i++) {
-    console.log(i);
+    // console.log(i);
   }
 }
 
@@ -11,7 +11,7 @@ function printNumber() {
 function printNumber1() {
   let i = 1;
   while (i <= 20) {
-    console.log(i);
+    // console.log(i);
     i++;
   }
 }
@@ -21,7 +21,7 @@ function printNumber1() {
 function printNumber2() {
   let i = 1;
   do {
-    console.log(i);
+    // console.log(i);
     i++;
   } while (i <= 10);
 }
@@ -31,7 +31,7 @@ function printNumber2() {
 // Using for Loop:
 function printReverseNumber() {
   for (let i = 10; i >= 1; i--) {
-    console.log(i);
+    // console.log(i);
   }
 }
 
@@ -39,7 +39,7 @@ function printReverseNumber() {
 function printReverseNumber1() {
   let i = 20;
   while (i >= 1) {
-    console.log(i);
+    // console.log(i);
     i--;
   }
 }
@@ -48,7 +48,7 @@ function printReverseNumber1() {
 function printReverseNumber2() {
   let i = 20;
   do {
-    console.log(i);
+    // console.log(i);
     i--;
   } while (i >= 1);
 }
