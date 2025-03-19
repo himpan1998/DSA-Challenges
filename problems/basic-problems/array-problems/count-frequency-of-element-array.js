@@ -12,8 +12,10 @@
  * @returns {Object} - An object with the frequency count of each element.
  */
 
-
 function countFrequency(numbers) {
+  console.log("numbers:", numbers);
+  const operations = numbers.join("-");
+  console.log("operations:", operations);
   const frequency = {};
   for (let i = 0; i < numbers.length; i++) {
     const num = numbers[i];
@@ -22,5 +24,5 @@ function countFrequency(numbers) {
 
   return frequency;
 }
-
-module.exports={countFrequency}
+countFrequency([1, 2, 3, 49, 5, 3, 2, 2]);
+// module.exports={countFrequency}/
