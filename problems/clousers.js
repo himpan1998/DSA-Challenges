@@ -8,8 +8,8 @@ function createCounter() {
 }
 
 const counter = createCounter();
-console.log(counter()); // Output: 1
-console.log(counter()); // Output: 2
-console.log(counter()); // Output: 3
+// console.log(counter()); // Output: 1
+// console.log(counter()); // Output: 2
+// console.log(counter()); // Output: 3
 
 module.exports = { createCounter };

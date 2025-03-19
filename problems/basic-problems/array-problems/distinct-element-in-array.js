@@ -19,8 +19,8 @@ function findUniqueElements(arr) {
 // By using set:
 function findDistinctArray(arr) {
   let removeDuplicate = new Set(arr);
-     uniqueArray=[...removeDuplicate];
-     return uniqueArray;
+  uniqueArray = [...removeDuplicate];
+  return uniqueArray;
 }
-
+console.log(findDistinctArray([1, 2, 3, 4, 5, 3, 2]));
 module.exports = { findUniqueElements, findDistinctArray };

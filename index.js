@@ -138,7 +138,7 @@ function arrayLargestNummber(numbers) {
   return max;
 }
 console.log(
-  "--------------------------------------------------------------------------------------------------------------------------------"
+  "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 );
 // console.log(arrayLargestNummber([1, 2, 3, 19]));
 
@@ -156,12 +156,48 @@ function flattenArray(array) {
   return result;
 }
 
-console.log(flattenArray(nestedArray));
+// console.log(flattenArray(nestedArray));
 
-const cars = new Array("BMW", "Volvo", "Saab", "Ford", "Fiat", "Audi");
-let cars2 = cars.concat("Honda");
-console.log("cars2:", cars2);
+const arr2 = [1, 2, 3, 4, 5];
+let arr3 = arr2.copyWithin(0, 3);
+console.log(arr2);
 
-const arr = [1, 23, 4, 5, 6, 7, 8, 9, 10];
-let arr1 = arr.concat(11, 12, 13, 14, 15);
-console.log(arr1);
+// entries()
+
+// Create an Array
+
+//  find():
+const array = [5, 12, 8, 130, 44];
+
+const found = array.find((element) => element > 11);
+
+console.log(found); // Output: 12
+
+const users = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+  { id: 3, name: "Charlie" },
+];
+
+const user = users.find((user) => {
+  return user["id"] === 2;
+});
+
+console.log(user); // Output: { id: 2, name: 'Bob' }
+
+//  findIndex():
+const array1 = [5, 12, 8, 130, 44];
+const index = array1.findIndex((element) => element > 12);
+console.log(index); // Output: 1
+
+const records = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+  { id: 3, name: "Charlie" },
+];
+
+const IndexObject = records.findIndex((record) => {
+  return record.b == 1;
+});
+console.log(IndexObject); // Output: { id: 2, name: 'Bob' }
+console.log("aaaa");
