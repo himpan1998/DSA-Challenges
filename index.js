@@ -88,6 +88,7 @@ const {
 } = require("./problems/basic-problems/array-problems/hasMap");
 
 const {} = require("./problems/basic-problems/array-problems/intersection-of-two-array");
+const {} = require("./problems/basic-problems/string-problems/word-frequency");
 
 // console.log(outerFunction());
 // console.log(reverseString("laugh"));

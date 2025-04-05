@@ -138,15 +138,15 @@ mySets.forEach((value) => {
 });
 
 let iterator = mySets.values();
-console.log(iterator); // {1,2,3,4,5}
+// console.log(iterator); // {1,2,3,4,5}
 
 for (let value of iterator) {
-  console.log(value);
+  // console.log(value);
 }
 
 let entries = mySets.entries();
-console.log(entries);
+// console.log(entries);
 
 for (let [key, value] of entries) {
-  console.log(key, value);
+  // console.log(key, value);
 }
