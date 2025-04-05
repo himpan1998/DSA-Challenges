@@ -13,9 +13,9 @@
  */
 
 function countFrequency(numbers) {
-  console.log("numbers:", numbers);
+  // console.log("numbers:", numbers);
   const operations = numbers.join("-");
-  console.log("operations:", operations);
+  // console.log("operations:", operations);
   const frequency = {};
   for (let i = 0; i < numbers.length; i++) {
     const num = numbers[i];

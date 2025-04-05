@@ -87,6 +87,8 @@ const {
   deleteKey,
 } = require("./problems/basic-problems/array-problems/hasMap");
 
+const {} = require("./problems/basic-problems/array-problems/intersection-of-two-array");
+
 // console.log(outerFunction());
 // console.log(reverseString("laugh"));
 // console.log(isStringPalindrome("Level"));
@@ -126,78 +128,78 @@ const {
 // console.log(list);
 // console.log(list);
 
-function arrayLargestNummber(numbers) {
-  let i = 0;
-  let max = 0;
-  while (i < numbers.length) {
-    if (numbers[i] > max) {
-      max = numbers[i];
-      i++;
-    }
-  }
-  return max;
-}
-console.log(
-  "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-);
+// function arrayLargestNummber(numbers) {
+//   let i = 0;
+//   let max = 0;
+//   while (i < numbers.length) {
+//     if (numbers[i] > max) {
+//       max = numbers[i];
+//       i++;
+//     }
+//   }
+//   return max;
+// }
+// console.log(
+//   "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+// );
 // console.log(arrayLargestNummber([1, 2, 3, 19]));
 
-let nestedArray = [1, [2, [3, 4], 5], 6];
+// let nestedArray = [1, [2, [3, 4], 5], 6];
 
-function flattenArray(array) {
-  let result = [];
-  for (let i = 0; i < array.length; i++) {
-    if (Array.isArray(array[i])) {
-      result = result.concat(flattenArray(array[i]));
-    } else {
-      result.push(array[i]);
-    }
-  }
-  return result;
-}
+// function flattenArray(array) {
+//   let result = [];
+//   for (let i = 0; i < array.length; i++) {
+//     if (Array.isArray(array[i])) {
+//       result = result.concat(flattenArray(array[i]));
+//     } else {
+//       result.push(array[i]);
+//     }
+//   }
+//   return result;
+// }
 
-// console.log(flattenArray(nestedArray));
+// // console.log(flattenArray(nestedArray));
 
-const arr2 = [1, 2, 3, 4, 5];
-let arr3 = arr2.copyWithin(0, 3);
-console.log(arr2);
+// const arr2 = [1, 2, 3, 4, 5];
+// let arr3 = arr2.copyWithin(0, 3);
+// console.log(arr2);
 
 // entries()
 
 // Create an Array
 
 //  find():
-const array = [5, 12, 8, 130, 44];
+// const array = [5, 12, 8, 130, 44];
 
-const found = array.find((element) => element > 11);
+// const found = array.find((element) => element > 11);
 
-console.log(found); // Output: 12
+// console.log(found); // Output: 12
 
-const users = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-  { id: 3, name: "Charlie" },
-];
+// const users = [
+//   { id: 1, name: "Alice" },
+//   { id: 2, name: "Bob" },
+//   { id: 3, name: "Charlie" },
+// ];
 
-const user = users.find((user) => {
-  return user["id"] === 2;
-});
+// const user = users.find((user) => {
+//   return user["id"] === 2;
+// });
 
-console.log(user); // Output: { id: 2, name: 'Bob' }
+// console.log(user); // Output: { id: 2, name: 'Bob' }
 
-//  findIndex():
-const array1 = [5, 12, 8, 130, 44];
-const index = array1.findIndex((element) => element > 12);
-console.log(index); // Output: 1
+// //  findIndex():
+// const array1 = [5, 12, 8, 130, 44];
+// const index = array1.findIndex((element) => element > 12);
+// console.log(index); // Output: 1
 
-const records = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-  { id: 3, name: "Charlie" },
-];
+// const records = [
+//   { id: 1, name: "Alice" },
+//   { id: 2, name: "Bob" },
+//   { id: 3, name: "Charlie" },
+// ];
 
-const IndexObject = records.findIndex((record) => {
-  return record.b == 1;
-});
-console.log(IndexObject); // Output: { id: 2, name: 'Bob' }
-console.log("aaaa");
+// const IndexObject = records.findIndex((record) => {
+//   return record.b == 1;
+// });
+// console.log(IndexObject); // Output: { id: 2, name: 'Bob' }
+// console.log("aaaa");

@@ -20,7 +20,7 @@ class ListLinked {
     let counter = 0;
     let currentNode = this.head;
     while (counter < this.size) {
-      console.log(currentNode);
+      // console.log(currentNode);
       currentNode = currentNode.next;
       counter++;
     }

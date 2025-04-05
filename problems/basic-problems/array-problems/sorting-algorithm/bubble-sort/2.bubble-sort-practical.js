@@ -65,10 +65,10 @@ function optimizedBubbleSort(arr) {
   return arr;
 }
 
-console.log(optimizedBubbleSort(newArr));
+// console.log(optimizedBubbleSort(newArr));
 
 /**
- * Time Complexity: 
+ * Time Complexity:
  * Best Case : if array is already sorted : O(n)
  * Average case: (n-1)*(n-1) : O(n^2)
  * Worst case: (n-1)*(n-1) : O(n^2)

@@ -12,7 +12,7 @@ let cars2 = cars.concat("Honda");
 
 const arr = [1, 23, 4, 5, 6, 7, 8, 9, 10];
 let arr1 = arr.concat(11, 12, 13, 14, 15);
-console.log("aaa");
+// console.log("aaa");
 // console.log(arr1);
 
 // copyWithin

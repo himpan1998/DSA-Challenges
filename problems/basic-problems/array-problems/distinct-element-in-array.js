@@ -22,5 +22,5 @@ function findDistinctArray(arr) {
   uniqueArray = [...removeDuplicate];
   return uniqueArray;
 }
-console.log(findDistinctArray([1, 2, 3, 4, 5, 3, 2]));
+// console.log(findDistinctArray([1, 2, 3, 4, 5, 3, 2]));s
 module.exports = { findUniqueElements, findDistinctArray };
