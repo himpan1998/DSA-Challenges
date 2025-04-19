@@ -42,7 +42,7 @@ function repeationWord(str) {
 
 let text = "hello world hello everyone";
 let wordMap = repeationWord(text);
-console.log(wordMap); // Output: Map { 'hello' => 2, 'world' => 1, 'everyone' => 1 }
+// console.log(wordMap); // Output: Map { 'hello' => 2, 'world' => 1, 'everyone' => 1 }
 
 module.exports = {
   countWordFrequency,
