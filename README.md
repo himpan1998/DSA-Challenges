@@ -59,14 +59,20 @@ The label belongs to one of **10 classes**, representing digits **0 to 9**.
 A recommended folder structure is shown below:
 
 ```text
-Assignment Second Machine Learning for Public Policy/
+Assignment-2_Machine-Learning-for-Public-Policy/
 │
 ├── README.md
-├── assignment2.py              # Python script version
-├── himanshu_pandey_A2.ipynb    # Code
-├── mnist_train.csv
-├── mnist_test.csv
-└── himanshu_pandey_A2.pdf       # Final written report & answers
+│
+├── code/
+│   └── himanshu_pandey_A2.ipynb      # Notebook (code + outputs)
+│
+├── data/
+│   └── mnist/
+│       ├── mnist_train.csv           # Training dataset
+│       └── mnist_test.csv            # Test dataset
+│
+└── report/
+    └── himanshu_pandey_A2.pdf        # Final answers (Q a–e)
 ```
 
 ---
