@@ -1,7 +1,7 @@
 
 # **Assignment 2: OCR with Non-linear Models**  
 
-- **Course Name:** Machine Learning for Public Policy:SPL 8810 
+- **Course Name:** Machine Learning for Public Policy (SPL 8810) 
 - **Submission Date:** 23 April, 2026
 - **Submitted By:** Himanshu Pandey  
 - **Entry No:** 2025SMZ8477    
@@ -10,7 +10,7 @@
 
 ---
 
-# Assignment Overview
+# Problem Statement and Objective
 
 This assignment is about **handwritten digit recognition** using the **MNIST dataset**. The objective is to compare multiple machine learning approaches for optical character recognition (OCR), starting from a simple linear baseline and gradually moving toward more expressive non-linear and unsupervised methods.
 
@@ -22,7 +22,7 @@ The assignment evaluates the following approaches:
 4. **Threshold-based Decision Control for Logistic Regression**
 5. **Unsupervised Clustering with Cluster-level Label Assignment**
 
-The workflow was designed to follow a disciplined machine learning pipeline:
+The workflow follows a standard machine learning pipeline:
 - prepare data,
 - split training data into train/validation,
 - tune hyperparameters on validation data,
@@ -33,7 +33,7 @@ This approach ensures that the final reported results are unbiased and reflect t
 
 ---
 
-#  Dataset Description
+# Dataset Description
 
 The assignment uses the **MNIST handwritten digits dataset** in CSV format.
 
@@ -86,7 +86,7 @@ This assignment is implemented in **Python** and uses common data science librar
 - `gc`
 - `numpy`
 - `pandas`
-- `scikit-learn
+- `scikit-learn`
 - 
 ## Install Dependencies
 
@@ -152,7 +152,7 @@ Then open `himanshu_pandey_A2.ipynb` and execute the cells in order.
 
 # Step-by-Step Procedure Followed
 
-This section explains the workflow in , a reproducible way.
+This section explains the workflow in a reproducible way.
 
 ## Data Loading
 The CSV files were loaded using `pandas.read_csv()`.  
@@ -244,7 +244,7 @@ Macro metrics treat all digit classes equally. This is useful in multi-class dig
 
 ## Question (a): Linear vs Quadratic Logistic Regression
 
-### Validation Results — Linear Model
+### Validation Results : Linear Model
 
 | Alpha | Macro Precision | Macro Recall | Macro F1 | Training Time (sec) |
 |------:|----------------:|-------------:|---------:|--------------------:|
@@ -255,7 +255,7 @@ Macro metrics treat all digit classes equally. This is useful in multi-class dig
 Best alpha for linear model:
 - **alpha = 0.0001**
 
-### Final Test Performance — Linear Model
+### Final Test Performance : Linear Model
 
 | Metric | Value |
 |--------|------:|
@@ -264,7 +264,7 @@ Best alpha for linear model:
 | Macro F1 | 0.9128 |
 | Training Time (sec) | 33.53 |
 
-### Validation Results — Quadratic Model
+### Validation Results : Quadratic Model
 
 | Alpha | Macro Precision | Macro Recall | Macro F1 | Training Time (sec) | Features |
 |------:|----------------:|-------------:|---------:|--------------------:|---------:|
@@ -275,7 +275,7 @@ Best alpha for linear model:
 Best alpha for quadratic model:
 - **alpha = 0.0001**
 
-### Final Test Performance — Quadratic Model
+### Final Test Performance : Quadratic Model
 
 | Metric | Value |
 |--------|------:|
@@ -285,7 +285,7 @@ Best alpha for quadratic model:
 | Training Time (sec) | 85.11 |
 | Feature Count | 1604 |
 
-### Comparison — Linear vs Quadratic
+### Comparison : Linear vs Quadratic
 
 | Model | Validation F1 | Test Macro F1 | Training Time (sec) | Features |
 |-------|--------------:|--------------:|--------------------:|---------:|
@@ -310,7 +310,7 @@ Although the optimal alpha does not change numerically, regularization becomes m
 
 ## Question (c): Neural Networks
 
-### Validation Results — Neural Network Architectures
+### Validation Results: Neural Network Architectures
 
 | Architecture | Macro Precision | Macro Recall | Macro F1 | Training Time (sec) | Epochs |
 |--------------|----------------:|-------------:|---------:|--------------------:|-------:|
@@ -322,7 +322,7 @@ Although the optimal alpha does not change numerically, regularization becomes m
 Best neural network architecture:
 - **(256, 128)**
 
-### Final Test Performance — Neural Network
+### Final Test Performance : Neural Network
 
 | Metric | Value |
 |--------|------:|
@@ -332,7 +332,7 @@ Best neural network architecture:
 | Training Time (sec) | 62.81 |
 | Epochs Used | 17 |
 
-### Comparison — Neural Network vs Quadratic Logistic Regression
+### Comparison: Neural Network vs Quadratic Logistic Regression
 
 | Model | Test Macro F1 | Training Time (sec) |
 |-------|--------------:|--------------------:|
@@ -401,7 +401,7 @@ The overall findings of this project are:
 3. **Threshold tuning increases F1 only by reducing coverage**, so it is not suitable when every sample must be classified.
 4. **Clustering is useful when labels are unavailable**, but it cannot match the performance of supervised learning.
 
-These results are fully consistent with the nature of the MNIST dataset, where strong performance is expected from both classical machine learning and neural-network-based methods.
+These results align well with the MNIST dataset, where high performance is typically expected from both classical machine learning models and neural networks.
 
 ---
 
@@ -443,5 +443,5 @@ Small numerical differences can happen because of:
 - platform differences
 - convergence variation
 
-#*Thank you*
+## Thank You
 ---
