@@ -38,8 +38,8 @@ This approach ensures that the final reported results are unbiased and reflect t
 The assignment uses the **MNIST handwritten digits dataset** in CSV format.
 
 ## Files
-- `mnist_train.csv` — training dataset containing **60,000 observations**
-- `mnist_test.csv` — test dataset containing **10,000 observations**
+- `mnist_train.csv`: training dataset containing **60,000 observations**
+- `mnist_test.csv`:  test dataset containing **10,000 observations**
 
 ## Data Format
 Each row represents one handwritten digit image:
