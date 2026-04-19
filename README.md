@@ -1,109 +1,121 @@
-# DSA Challenges using JavaScript/Node.js
+# 📘 Assignment 2: OCR with Non-linear Models
 
-This project contains solutions to various Data Structures and Algorithms (DSA) problems using JavaScript. Each problem is implemented in a separate file, and the project is set up to use `nodemon` for automatic reloading during development.
+---
 
-## Project Structure: 
+## 🏫 Course Information
+- **Course Name:** 8810 Machine Learning for Public Policy  
+- **Instructor:** Prof. Sugat Chaturvedi  
+- **Submission Date:** 23 April, 2026  
 
+---
 
-Here's a single-file README.md that includes all the essential information for your DSA project:
+## 👨‍🎓 Student Details
+- **Name:** Himanshu Pandey  
+- **Entry No:** 2025SMZ8477  
 
-markdown
-Copy code
-# DSA Challenges with Node.js
+---
 
-This project contains solutions to various Data Structures and Algorithms (DSA) problems using JavaScript. Each problem is implemented in a separate file, and the project is set up to use `nodemon` for automatic reloading during development.
+## 📌 Overview
+This assignment focuses on handwritten digit classification (OCR) using the MNIST dataset.  
+Different machine learning approaches are implemented and compared, including:
+- Linear models  
+- Quadratic (non-linear) features  
+- Neural networks  
+- Threshold tuning  
+- Unsupervised clustering  
 
-## Project Structure
+---
 
-DATA-STRUCTURE-ALGORITHMS/
-├── DSA-Challenges/
-│ └── README.md
-├── problems/
-│ ├── problem1.js
-│ ├── problem2.js
-│ ├── problem3.js
-│ └── problem4.js
-├── index.js
-├── package.json
-└── node_modules/
+## 📂 Files in this Repository
 
-## Setup & Usage
+| File | Description |
+|-----|-------------|
+| `assignment2.ipynb / .py` | Complete code implementation |
+| `mnist_train.csv` | Training dataset (60,000 samples) |
+| `mnist_test.csv` | Test dataset (10,000 samples) |
+| `Assignment_Report.pdf` | Final written answers (Q a–e) |
 
-1. **Install Dependencies:**
+---
 
-- Navigate to the project folder and run:```bash npm install.
-- npm start
+## 🔍 Tasks Summary
 
-$(function() {
-    // Sample Data Source with Competitors and their Images
-    var competitorsData = [
-        {
-            competitorName: 'Competitor 1',
-            images: [
-                { url: 'https://example.com/image1.jpg', name: 'Image 1' },
-                { url: 'https://example.com/image2.jpg', name: 'Image 2' }
-            ]
-        },
-        {
-            competitorName: 'Competitor 2',
-            images: [
-                { url: 'https://example.com/image3.jpg', name: 'Image 3' },
-                { url: 'https://example.com/image4.jpg', name: 'Image 4' },
-                { url: 'https://example.com/image5.jpg', name: 'Image 5' }
-            ]
-        }
-    ];
+### (a) Linear vs Quadratic Models
+- Logistic Regression with:
+  - Linear features
+  - Quadratic features
+- Compared using Macro Precision, Recall, F1
 
-    // Initialize dxDataGrid
-    $("#gridContainer").dxDataGrid({
-        dataSource: competitorsData,
-        columns: [
-            { dataField: "competitorName", caption: "Competitor Name" },
-            {
-                caption: "Images",
-                cellTemplate: function(container, options) {
-                    var images = options.data.images;
-                    
-                    // Create a container for images and links
-                    var imageContainer = $('<div>').css({
-                        display: 'flex',
-                        'flex-wrap': 'wrap'
-                    });
-                    
-                    // Loop through each image and display it with a download link
-                    images.forEach(function(image) {
-                        // Display Image
-                        var imgElement = $('<img>')
-                            .attr('src', image.url)
-                            .css({ 
-                                width: '50px', 
-                                height: '50px', 
-                                margin: '5px' 
-                            });
-                        
-                        // Create Download Link
-                        var downloadLink = $('<a>')
-                            .attr('href', image.url)
-                            .attr('download', image.name)
-                            .text('Download')
-                            .css({ marginRight: '10px' });
+### (b) Regularization Analysis
+- Studied effect of α (regularization parameter)
+- Observed optimal α remains same but sensitivity increases
 
-                        // Create a wrapper for image and link
-                        var imageWrapper = $('<div>')
-                            .css({ margin: '5px' })
-                            .append(imgElement)
-                            .append('<br/>')
-                            .append(downloadLink);
+### (c) Neural Network
+- Multi-Layer Perceptron (MLP)
+- Best architecture: **(256, 128)**
 
-                        // Append the image and download link to the image container
-                        imageContainer.append(imageWrapper);
-                    });
+### (d) Threshold Tuning
+- Higher threshold → higher F1  
+- Lower coverage → fewer predictions  
 
-                    // Append the image container to the cell container
-                    container.append(imageContainer);
-                }
-            }
-        ],
-        showBorders: true
-    });
-});
+### (e) Clustering-based Labeling
+- MiniBatch K-Means clustering
+- Labels assigned via majority voting
+
+---
+
+## 📊 Key Results
+
+| Model                          | Macro F1 |
+|--------------------------------|----------|
+| Logistic Regression (Linear)   | 0.9128   |
+| Logistic Regression (Quadratic)| 0.9423   |
+| Neural Network (MLP)           | 0.9818   |
+| Clustering (k = 300)           | 0.9090   |
+
+---
+
+## 🧠 Key Insights
+- Non-linear models improve performance significantly  
+- Neural networks achieve highest accuracy  
+- Quadratic features increase computation cost  
+- Threshold tuning introduces accuracy–coverage trade-off  
+- Clustering works without labels but has lower accuracy  
+
+---
+
+## ⚙️ Requirements
+
+pip install numpy pandas scikit-learn matplotlib
+
+---
+
+## ▶️ How to Run
+
+1. Place datasets in the working directory:
+   - mnist_train.csv
+   - mnist_test.csv
+
+2. Run:
+   python assignment2.py
+
+or open the Jupyter notebook.
+
+---
+
+## 📈 Dataset
+- MNIST Handwritten Digits
+- 28 × 28 grayscale images
+- 10 classes (0–9)
+
+---
+
+## 🎯 Conclusion
+Neural networks outperform all other models, achieving the best balance between accuracy and efficiency.  
+Clustering provides a useful alternative when labels are unavailable but is less accurate than supervised learning.
+
+---
+
+## ✅ Status
+✔ Completed  
+✔ Results verified  
+✔ Ready for submission  
