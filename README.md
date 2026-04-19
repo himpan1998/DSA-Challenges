@@ -143,8 +143,24 @@ Ensure that the following files are present in the working directory:
 ## Step 2: Run the Code
 
 ### Option A: Using Python Script
-```bash
-python himanshu_pandey_A2.py
+
+Run the following command:
+    
+    python himanshu_pandey_A2.py
+
+---
+
+### Option B: Using Jupyter Notebook
+
+Launch Jupyter Notebook:
+    
+    jupyter notebook
+
+Then open the file:
+
+    himanshu_pandey_A2.ipynb
+
+Finally, execute all cells sequentially from top to bottom.
 
 ---
 
