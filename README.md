@@ -131,22 +131,24 @@ scikit-learn
 
 # How to Run the Project
 
-## Step 1: Place the files
-Make sure the following files are in the same working directory:
+## Step 1: Place the Files
+Ensure that the following files are present in the working directory:
+
 - `mnist_train.csv`
 - `mnist_test.csv`
 - `himanshu_pandey_A2.py` or `himanshu_pandey_A2.ipynb`
 
-## Step 2: Run the Python script
+---
+
+## Step 2: Run the Code
+
+### Option A: Using Python Script
 ```bash
 python himanshu_pandey_A2.py
-```
-
-## Step 3: Or run in Jupyter Notebook
-```bash
+Option B: Using Jupyter Notebook
 jupyter notebook
-```
-Then open `himanshu_pandey_A2.ipynb` and execute the cells in order.
+
+Then open himanshu_pandey_A2.ipynb and execute all cells sequentially.
 
 ---
 
