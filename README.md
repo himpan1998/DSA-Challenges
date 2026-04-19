@@ -1,5 +1,5 @@
 
-# **Assignment Title: OCR with Non-linear Models (Assignment 2)**  
+# **Assignment 2: OCR with Non-linear Models**  
 
 - **Course Name:** Machine Learning for Public Policy:SPL 8810 
 - **Submission Date:** 23 April, 2026
