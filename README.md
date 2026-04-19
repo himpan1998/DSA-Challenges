@@ -145,10 +145,11 @@ Ensure that the following files are present in the working directory:
 ### Option A: Using Python Script
 ```bash
 python himanshu_pandey_A2.py
-Option B: Using Jupyter Notebook
-jupyter notebook
 
-Then open himanshu_pandey_A2.ipynb and execute all cells sequentially.
+### Option B: Using Python Script
+```bash
+jupyter notebook
+himanshu_pandey_A2.ipynb
 
 ---
 
