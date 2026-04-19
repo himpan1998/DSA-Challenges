@@ -76,17 +76,17 @@ Assignment Second Machine Learning for Public Policy/
 This assignment is implemented in **Python** and uses common data science libraries.
 
 ## Required Packages
-- Python 3.10+ recommended
-- numpy
-- pandas
-- scikit-learn
-- matplotlib (optional, for plots if used)
-
+- `time`
+- `gc`
+- `numpy`
+- `pandas`
+- `scikit-learn
+- 
 ## Install Dependencies
 
 ### Option A: Direct installation with pip
 ```bash
-pip install numpy pandas scikit-learn matplotlib jupyter
+pip install numpy pandas scikit-learn
 ```
 
 ### Option B: Create a virtual environment first
@@ -106,7 +106,7 @@ source venv/bin/activate
 
 Then install:
 ```bash
-pip install numpy pandas scikit-learn matplotlib jupyter
+pip install numpy pandas scikit-learn
 ```
 
 ## Optional: Save dependency versions
@@ -119,8 +119,6 @@ A sample minimal `requirements.txt` could look like:
 numpy
 pandas
 scikit-learn
-matplotlib
-jupyter
 ```
 
 ---
@@ -131,24 +129,24 @@ jupyter
 Make sure the following files are in the same working directory:
 - `mnist_train.csv`
 - `mnist_test.csv`
-- `assignment2.py` or `assignment2.ipynb`
+- `himanshu_pandey_A2.py` or `himanshu_pandey_A2.ipynb`
 
 ## Step 2: Run the Python script
 ```bash
-python assignment2.py
+python himanshu_pandey_A2.py
 ```
 
 ## Step 3: Or run in Jupyter Notebook
 ```bash
 jupyter notebook
 ```
-Then open `assignment2.ipynb` and execute the cells in order.
+Then open `himanshu_pandey_A2.ipynb` and execute the cells in order.
 
 ---
 
 # Step-by-Step Procedure Followed
 
-This section explains the workflow in a professional, reproducible way.
+This section explains the workflow in , a reproducible way.
 
 ## Data Loading
 The CSV files were loaded using `pandas.read_csv()`.  
@@ -439,4 +437,5 @@ Small numerical differences can happen because of:
 - platform differences
 - convergence variation
 
+#*Thank you*
 ---
