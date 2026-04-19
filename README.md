@@ -146,11 +146,6 @@ Ensure that the following files are present in the working directory:
 ```bash
 python himanshu_pandey_A2.py
 
-### Option B: Using Python Script
-```bash
-jupyter notebook
-himanshu_pandey_A2.ipynb
-
 ---
 
 # Step-by-Step Procedure Followed
