@@ -12,7 +12,6 @@
 Himanshu Pandey-2025SMZ8477, Department of Management Studies (DMS), IIT Delhi <br>
 Sonalika Ray-2025PPZ8087,School of Public Policy (SPP), IIT Delhi<br>
 </sub>
-<br>
 <sub>
 Course: SPL8810 – Machine Learning for Public Policy <br>
 Instructor: Prof. Sugat Chaturvedi
