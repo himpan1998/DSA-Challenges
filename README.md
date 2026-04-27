@@ -1,15 +1,23 @@
 
 ---
-# 📊 Fairness and Consumer Protection in AI-driven Insurance Cross-Selling
+# Fairness and Consumer Protection in AI-driven Insurance Cross-Selling
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Machine Learning](https://img.shields.io/badge/Machine-Learning-green)
 ![Fairness](https://img.shields.io/badge/AI-Fairness-critical)
 ![Status](https://img.shields.io/badge/Project-Completed-success)
+## Authors
 
+**Himanshu Pandey** (2025SMZ8477) , Department of Management Studies (DMS),Indian Institute of Technology Delhi  
+**Sonalika Ray** (2025PPZ8087) , School Of Public Policy (SPP),Indian Institute of Technology Delhi 
+
+## Course Information
+
+**Course:** SPL8810 – Machine Learning for Public Policy  
+**Instructor:** Prof. Sugat Chaturvedi  
 ---
 
-## 🧠 Project Overview
+## Project Overview
 
 This project develops a **machine learning-based decision support system** to predict whether existing vehicle insurance customers are likely to purchase **health insurance**.
 
@@ -23,7 +31,7 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
 - Predict customer interest in health insurance  
 - Compare multiple ML models  
@@ -37,28 +45,28 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 
-## 📊 Dataset Description
+## Dataset Description
 
 - **Total records:** 381,109  
 - **Target Variable:** `Response`  
   - `1` → Interested  
   - `0` → Not Interested  
 
-### 🔹 Key Features
+### Key Features
 - Demographic: Age, Gender  
 - Economic: Annual Premium  
 - Behavioral: Vehicle Age, Damage history  
 - Interaction: Sales Channel, Vintage  
 - Geographic: Region Code  
 
-⚠️ Dataset is **highly imbalanced (~12% positive class)**
+ Dataset is **highly imbalanced (~12% positive class)**
 
 ---
 
-## 🔍 Key Insights (EDA)
+## Expolatory Data Analysis
 
 - Majority customers are not interested (~88%)  
 - Customers with **vehicle damage history** show higher interest  
@@ -68,9 +76,9 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 
 ---
 
-## ⚙️ Machine Learning Models
+## Machine Learning Models
 
-- Logistic Regression ⭐ (Best Model)  
+- Logistic Regression 
 - Decision Tree  
 - Random Forest  
 - XGBoost  
@@ -78,7 +86,7 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 
 ---
 
-## 📈 Model Performance
+## Model Performance
 
 | Metric        | Value Range |
 |--------------|------------|
@@ -89,62 +97,62 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 | ROC-AUC      | ~0.84–0.85 |
 | PR-AUC       | ~0.31–0.36 |
 
-### 🎯 Key Observation
+### Key Observation
 
 - High Recall → Most interested customers captured  
 - Low Precision → Many false positives  
 
-👉 Model follows a **recall-focused strategy**
+ Model follows a **recall-focused strategy**
 
 ---
 
-## 📉 Confusion Matrix Insight
+##  Confusion Matrix Insight
 
 - Very few **missed customers (FN low)**  
 - Large number of **false positives (FP high)**  
 
 ✔ Good for marketing reach  
-❌ Inefficient targeting cost  
+Inefficient targeting cost  
 
 ---
 
-## 📊 Model Evaluation Visuals
+## Model Evaluation Visuals
 
-### 🔹 ROC Curve (AUROC ≈ 0.85)
+###  ROC Curve (AUROC ≈ 0.85)
 - Strong class separation  
 
-### 🔹 Precision-Recall Curve (AUPRC ≈ 0.34)
+### Precision-Recall Curve (AUPRC ≈ 0.34)
 - Moderate performance due to imbalance  
 
 ---
 
-## ⚖️ Fairness Analysis
+## Fairness Analysis
 
-### 🔹 Gender
+### Gender
 - Male recall slightly higher  
 - Female customers more likely to be missed  
 
-👉 ⚠️ Mild gender bias  
+ Mild gender bias  
 
 ---
 
-### 🔹 Premium Group
+### Premium Group
 - High premium → highest predicted rate (~48%)  
 - Low/Medium → lower targeting  
 
-👉 ⚠️ Bias toward high-value customers  
+Bias toward high-value customers  
 
 ---
 
-### 🔹 Vehicle Age
+### Vehicle Age
 - >2 years → extremely high prediction (~98%)  
 - <1 year → very low prediction  
 
-👉 ⚠️ Strong behavioral bias  
+Strong behavioral bias  
 
 ---
 
-## 📊 Key Visualizations Included
+## Key Visualizations Included
 
 ✔ Response Distribution  
 ✔ Model Comparison (Accuracy, F1, ROC-AUC)  
@@ -156,16 +164,16 @@ The goal is to ensure that AI-driven systems are **accurate, fair, and policy-re
 
 ---
 
-## 🧾 Policy Implications
+##  Policy Implications
 
 This study highlights a critical trade-off:
 
-### ⚖️ Efficiency vs Fairness
+### Efficiency vs Fairness
 
 - ML improves targeting efficiency  
 - But creates **unequal outcomes across groups**
 
-### 🔑 Recommendations
+### Recommendations
 
 - Use model as **decision-support tool (not automation)**  
 - Perform **regular fairness audits**  
@@ -174,7 +182,7 @@ This study highlights a critical trade-off:
 
 ---
 
-## ⚠️ Limitations
+##  Limitations
 
 - Observational dataset (no causal inference)  
 - Low precision (high false positives)  
@@ -182,7 +190,7 @@ This study highlights a critical trade-off:
 
 ---
 
-## 🚀 Future Work
+##  Future Work
 
 - Fairness-aware algorithms  
 - Threshold optimization  
@@ -191,7 +199,7 @@ This study highlights a critical trade-off:
 
 ---
 
-## 🧠 Key Takeaways
+##  Key Takeaways
 
 - High recall ≠ fair system  
 - ML decisions impact **who gets targeted**  
@@ -200,24 +208,9 @@ This study highlights a critical trade-off:
 
 ---
 
-## 👨‍🎓 Authors
-
-Himanshu Pandey (2025SMZ8477)  
-Sonalika Ray (2025PPZ8087)  
-
-Department of Management Studies (DMS)  
-Indian Institute of Technology Delhi  
-
 ---
 
-## 📘 Course Information
-
-**Course:** SPL8810 – Machine Learning for Public Policy  
-**Instructor:** Prof. Sugat Chaturvedi  
-
----
-
-## ⭐ Final Note
+##  Final Note
 
 This project demonstrates how machine learning can be integrated with fairness and policy considerations to build **responsible AI systems for real-world applications**.
 
