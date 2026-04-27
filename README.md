@@ -6,12 +6,16 @@
 ![Machine Learning](https://img.shields.io/badge/Machine-Learning-green)
 ![Fairness](https://img.shields.io/badge/AI-Fairness-critical)
 ![Status](https://img.shields.io/badge/Project-Completed-success)
-## Authors
 
-****Himanshu Pandey**** (2025SMZ8477) , Department of Management Studies (DMS),I.I.T DELHI
-****Sonalika Ray**** (2025PPZ8087) , School Of Public Policy (SPP),I.I.T DELHI
-****Course:****SPL8810 – Machine Learning for Public Policy  
-*****Instructor:**** Prof. Sugat Chaturvedi  
+## Authors
+<sub>
+Himanshu Pandey (2025SMZ8477), Department of Management Studies (DMS), IIT Delhi  
+Sonalika Ray (2025PPZ8087), School of Public Policy (SPP), IIT Delhi  
+
+Course: SPL8810 – Machine Learning for Public Policy  
+Instructor: Prof. Sugat Chaturvedi
+</sub>
+
 ---
 
 ## Project Overview
