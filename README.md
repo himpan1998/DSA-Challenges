@@ -1,194 +1,185 @@
-# Assignment 2: OCR with Non-linear Models
 
-**Course:** Machine Learning for Public Policy (SPL 8810)  
-**Submission Date:** 23 April, 2026  
-**Student:** Himanshu Pandey  
-**Entry No.:** 2025SMZ8477  
+---
+
+## 📊 Dataset Description
+
+- **Total records:** 381,109  
+- **Target Variable:** `Response`  
+  - `1` → Interested  
+  - `0` → Not Interested  
+
+### 🔹 Key Features
+- Demographic: Age, Gender  
+- Economic: Annual Premium  
+- Behavioral: Vehicle Age, Damage history  
+- Interaction: Sales Channel, Vintage  
+- Geographic: Region Code  
+
+⚠️ Dataset is **highly imbalanced (~12% positive class)**
+
+---
+
+## 🔍 Key Insights (EDA)
+
+- Majority customers are not interested (~88%)  
+- Customers with **vehicle damage history** show higher interest  
+- **Older vehicles (>2 years)** → highest response rate  
+- **Middle-aged customers** more likely to respond  
+- Slight variation across gender and premium segments  
+
+---
+
+## ⚙️ Machine Learning Models
+
+- Logistic Regression ⭐ (Best Model)  
+- Decision Tree  
+- Random Forest  
+- XGBoost  
+- CatBoost  
+
+---
+
+## 📈 Model Performance
+
+| Metric        | Value Range |
+|--------------|------------|
+| Accuracy     | ~69–70%    |
+| Precision    | ~27–28%    |
+| Recall       | ~93–94%    |
+| F1 Score     | ~0.42–0.43 |
+| ROC-AUC      | ~0.84–0.85 |
+| PR-AUC       | ~0.31–0.36 |
+
+### 🎯 Key Observation
+
+- High Recall → Most interested customers captured  
+- Low Precision → Many false positives  
+
+👉 Model follows a **recall-focused strategy**
+
+---
+
+## 📉 Confusion Matrix Insight
+
+- Very few **missed customers (FN low)**  
+- Large number of **false positives (FP high)**  
+
+✔ Good for marketing reach  
+❌ Inefficient targeting cost  
+
+---
+
+## 📊 Model Evaluation Visuals
+
+### 🔹 ROC Curve (AUROC ≈ 0.85)
+- Strong class separation  
+
+### 🔹 Precision-Recall Curve (AUPRC ≈ 0.34)
+- Moderate performance due to imbalance  
+
+---
+
+## ⚖️ Fairness Analysis
+
+### 🔹 Gender
+- Male recall slightly higher  
+- Female customers more likely to be missed  
+
+👉 ⚠️ Mild gender bias  
+
+---
+
+### 🔹 Premium Group
+- High premium → highest predicted rate (~48%)  
+- Low/Medium → lower targeting  
+
+👉 ⚠️ Bias toward high-value customers  
+
+---
+
+### 🔹 Vehicle Age
+- >2 years → extremely high prediction (~98%)  
+- <1 year → very low prediction  
+
+👉 ⚠️ Strong behavioral bias  
+
+---
+
+## 📊 Key Visualizations Included
+
+✔ Response Distribution  
+✔ Model Comparison (Accuracy, F1, ROC-AUC)  
+✔ ROC & PR Curves  
+✔ Confusion Matrix  
+✔ Gender Fairness Plot  
+✔ Premium Fairness Plot  
+✔ Vehicle Age Fairness Plot  
+
+---
+
+## 🧾 Policy Implications
+
+This study highlights a critical trade-off:
+
+### ⚖️ Efficiency vs Fairness
+
+- ML improves targeting efficiency  
+- But creates **unequal outcomes across groups**
+
+### 🔑 Recommendations
+
+- Use model as **decision-support tool (not automation)**  
+- Perform **regular fairness audits**  
+- Adjust thresholds based on policy goals  
+- Avoid exclusion of vulnerable groups  
+
+---
+
+## ⚠️ Limitations
+
+- Observational dataset (no causal inference)  
+- Low precision (high false positives)  
+- Potential hidden bias in features  
+
+---
+
+## 🚀 Future Work
+
+- Fairness-aware algorithms  
+- Threshold optimization  
+- Explainability (SHAP/LIME)  
+- Causal ML approaches  
+
+---
+
+## 🧠 Key Takeaways
+
+- High recall ≠ fair system  
+- ML decisions impact **who gets targeted**  
+- Fairness is essential in policy-sensitive domains  
+- Responsible AI is critical in finance  
+
+---
+
+## 👨‍🎓 Authors
+
+Himanshu Pandey (2025SMZ8477)  
+Sonalika Ray (2025PPZ8087)  
+
+Department of Management Studies (DMS)  
+Indian Institute of Technology Delhi  
+
+---
+
+## 📘 Course Information
+
+**Course:** SPL8810 – Machine Learning for Public Policy  
 **Instructor:** Prof. Sugat Chaturvedi  
 
 ---
 
-# Problem Statement
+## ⭐ Final Note
 
-This assignment focuses on **handwritten digit classification** using the **MNIST dataset**. The goal is to compare multiple machine learning approaches ranging from linear models to neural networks and unsupervised learning.
-
----
-
-# Dataset
-
-- Training Data: 60,000 samples  
-- Test Data: 10,000 samples  
-- Features: 784 pixels (28×28 grayscale images)  
-- Classes: Digits 0–9  
+This project demonstrates how machine learning can be integrated with fairness and policy considerations to build **responsible AI systems for real-world applications**.
 
 ---
-
-# Methods Used
-
-1. Logistic Regression (Linear)
-2. Logistic Regression (Quadratic Features)
-3. Neural Networks (MLP)
-4. Threshold Analysis
-5. Clustering (MiniBatch K-Means)
-
----
-
-# Methodology
-
-## Linear Model
-- Model: SGDClassifier (logistic regression)
-- Features: 784 pixels
-- Best α = 0.0001
-
----
-
-## Quadratic Model
-To avoid memory issues:
-- Selected top high-variance pixels
-- Applied quadratic expansion only on selected features
-
-Final configuration:
-- k = 100  
-- α = 0.0001  
-- Features = 5834  
-
----
-
-## Neural Network
-Tested architectures:
-- (128), (256), (128,64), (256,128)
-
-Best:
-- (256, 128)
-
----
-
-## Clustering
-- MiniBatch K-Means
-- k = 100, 200, 300
-- Labels assigned via majority voting
-
----
-
-# Results
-
-## Linear Model
-
-| Metric | Value |
-|--------|------:|
-| Precision | 0.9132 |
-| Recall | 0.9131 |
-| F1 Score | 0.9128 |
-| Time | ~34 sec |
-
----
-
-## Quadratic Model (Final Tuned)
-
-| Metric | Value |
-|--------|------:|
-| Precision | 0.9516 |
-| Recall | 0.9509 |
-| F1 Score | 0.9507 |
-| Time | ~290 sec |
-| Features | 5834 |
-
----
-
-## Neural Network
-
-| Metric | Value |
-|--------|------:|
-| Precision | 0.9818 |
-| Recall | 0.9818 |
-| F1 Score | 0.9818 |
-| Time | ~57–63 sec |
-
----
-
-## Threshold Analysis
-
-| Threshold | Coverage | F1 |
-|----------|---------|----|
-| 0.3 | 0.9996 | 0.9132 |
-| 0.5 | 0.9649 | 0.9312 |
-| 0.7 | 0.8216 | 0.9660 |
-| 0.9 | 0.5214 | 0.9866 |
-
----
-
-## Clustering Results
-
-| k | F1 |
-|--|----|
-| 100 | 0.8557 |
-| 200 | 0.8994 |
-| 300 | 0.9090 |
-
----
-
-# Model Comparison
-
-## Linear vs Quadratic
-
-| Model | F1 | Time | Features |
-|------|----|------|---------|
-| Linear | 0.9128 | ~34 sec | 784 |
-| Quadratic | 0.9507 | ~290 sec | 5834 |
-
----
-
-## Quadratic vs Neural Network
-
-| Model | F1 | Time |
-|------|----|------|
-| Quadratic | 0.9507 | ~290 sec |
-| Neural Network | 0.9818 | ~57 sec |
-
----
-
-## Clustering vs Supervised
-
-| Model | F1 |
-|------|----|
-| Clustering | 0.9090 |
-| Linear | 0.9128 |
-| Quadratic | 0.9507 |
-| Neural Network | 0.9818 |
-
----
-
-# Key Insights
-
-- Quadratic features improve performance significantly  
-- Neural networks give best results with lower time  
-- Threshold tuning improves F1 but reduces coverage  
-- Clustering works without labels but is less accurate  
-
----
-
-# Conclusion
-
-- Linear → strong baseline  
-- Quadratic → higher accuracy, higher cost  
-- Neural Network → best overall model  
-- Clustering → useful without labels  
-
----
-
-# Reproducibility
-
-- Use same train-validation split  
-- Use random_state = 42  
-- Run notebook sequentially  
-
----
-
-# Notes
-
-- Small variations may occur due to system differences  
-- Quadratic model uses optimized feature selection to avoid memory issues  
-
----
-
-# Thank You
