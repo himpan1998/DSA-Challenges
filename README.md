@@ -1,6 +1,6 @@
 
 ---
-# Fairness and Consumer Protection in AI-driven Insurance Cross-Selling
+# Title: Fairness and Consumer Protection in AI-driven Insurance Cross-Selling
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Machine Learning](https://img.shields.io/badge/Machine-Learning-green)
@@ -9,8 +9,8 @@
 
 ## Author
 <sub>
-Himanshu Pandey (2025SMZ8477), Department of Management Studies (DMS), IIT Delhi <br>
-Sonalika Ray (2025PPZ8087), School of Public Policy (SPP), IIT Delhi
+Himanshu Pandey-2025SMZ8477, Department of Management Studies (DMS), IIT Delhi <br>
+Sonalika Ray-2025PPZ8087,School of Public Policy (SPP), IIT Delhi<br>
 </sub>
 <br>
 <sub>
@@ -20,7 +20,7 @@ Instructor: Prof. Sugat Chaturvedi
 
 ---
 
-## Project Overview
+## Look at Project: 
 
 This project develops a **machine learning-based decision support system** to predict whether existing vehicle insurance customers are likely to purchase **health insurance**.
 
