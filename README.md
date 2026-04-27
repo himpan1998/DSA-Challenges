@@ -1,5 +1,44 @@
 
 ---
+# 📊 Fairness and Consumer Protection in AI-driven Insurance Cross-Selling
+
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Machine Learning](https://img.shields.io/badge/Machine-Learning-green)
+![Fairness](https://img.shields.io/badge/AI-Fairness-critical)
+![Status](https://img.shields.io/badge/Project-Completed-success)
+
+---
+
+## 🧠 Project Overview
+
+This project develops a **machine learning-based decision support system** to predict whether existing vehicle insurance customers are likely to purchase **health insurance**.
+
+Unlike traditional ML projects, this study goes beyond prediction and focuses on:
+
+✔ Model performance  
+✔ Fairness across customer groups  
+✔ Policy and ethical implications  
+
+The goal is to ensure that AI-driven systems are **accurate, fair, and policy-relevant**.
+
+---
+
+## 🎯 Objectives
+
+- Predict customer interest in health insurance  
+- Compare multiple ML models  
+- Handle class imbalance effectively  
+- Evaluate fairness across:
+  - Gender  
+  - Premium Group  
+  - Vehicle Age  
+  - Region  
+- Provide actionable **policy insights**
+
+---
+
+## 📂 Project Structure
+
 
 ## 📊 Dataset Description
 
