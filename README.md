@@ -8,10 +8,10 @@
 ![Status](https://img.shields.io/badge/Project-Completed-success)
 ## Authors
 
-**Himanshu Pandey** (2025SMZ8477) , Department of Management Studies (DMS),I.I.T DELHI
-**Sonalika Ray** (2025PPZ8087) , School Of Public Policy (SPP),I.I.T DELHI
-**Course:** SPL8810 – Machine Learning for Public Policy  
-**Instructor:** Prof. Sugat Chaturvedi  
+****Himanshu Pandey**** (2025SMZ8477) , Department of Management Studies (DMS),I.I.T DELHI
+****Sonalika Ray**** (2025PPZ8087) , School Of Public Policy (SPP),I.I.T DELHI
+****Course:****SPL8810 – Machine Learning for Public Policy  
+*****Instructor:**** Prof. Sugat Chaturvedi  
 ---
 
 ## Project Overview
